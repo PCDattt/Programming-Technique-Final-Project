@@ -11,5 +11,6 @@ void changedate();
 void showdate();
 void stafflogin();
 void studentlogin();
+void checkdate(int day, int month, int year, int& check);
 
 #endif

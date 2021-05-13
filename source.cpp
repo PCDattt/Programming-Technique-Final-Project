@@ -1,5 +1,52 @@
 #include "header.h"
 
+void checkdate(int day, int month, int year, int& check)
+{
+	if (month > 12 || month < 1)
+	{
+		cout << "Invalid date, please try again." << endl;
+		check = -1;
+	}
+
+	if (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12)
+	{
+		if (day < 1 || day > 31)
+		{
+			cout << "Invalid date, please try again." << endl;
+			check = -1;
+		}
+	}
+
+	if (month == 4 || month == 6 || month == 9 || month == 11)
+	{
+		if (day < 1 || day > 30)
+		{
+			cout << "Invalid date, please try again." << endl;
+			check = -1;
+		}
+	}
+
+	if (month == 2)
+	{
+		if ((year % 4 == 0 && year % 100 != 0) || (year % 100 == 0 && year % 400 == 0))
+		{
+			if (day < 1 || day > 29)
+			{
+				cout << "Invalid date, please try again." << endl;
+				check = -1;
+			}
+		}
+		else
+		{
+			if (day < 1 || day > 28)
+			{
+				cout << "Invalid date, please try again." << endl;
+				check = -1;
+			}
+		}
+	}
+}
+
 void changedate()
 {
 	int day = 0;
@@ -21,6 +68,7 @@ void changedate()
 			cin >> year;
 			check = 0;
 			cout << endl;
+			checkdate(day, month, year, check);
 		}
 		file << day << " " << month << " " << year;
 		cout << "Change date successfully" << endl;
@@ -83,3 +131,5 @@ void studentlogin()
 
 	cout << endl;
 }
+
+
