@@ -146,7 +146,7 @@ bool check_email_student(gmail_student& a)
 	cin >> x;
 	cin.ignore();
 	cout << " + enter password :";
-	cin.getline(y, 49);
+	cin.getline(y, 50);
 	while (!f1.eof())
 	{
 		read_info_email_student(f1, a);
@@ -154,8 +154,10 @@ bool check_email_student(gmail_student& a)
 		{
 			if (strcmp(y, a.pw) == 0)
 			{
+				f1.close();
 				return true;
 			}
+			f1.close();
 			return false;
 		}
 	}
@@ -167,7 +169,7 @@ void read_info_email_student(ifstream& file, gmail_student& a)
 	char b[50];
 	file >> a.name_gmail;
 	file.ignore();
-	file.getline(b, 49, '\n');
+	file.getline(b, 50, '\n');
 	a.pw = new char[strlen(b) + 1];
 #pragma warning(suppress : 4996)
 	strcpy(a.pw, b);
@@ -187,6 +189,7 @@ void create_class()
 		if (a == d)
 		{
 			cout << "This class already exists" << endl;
+			f.close();
 			return;
 		}
 	}
@@ -212,11 +215,11 @@ void read_info_student(ifstream& file, i_student& a)
 {
 	char b[50];
 	file.ignore();
-	file.getline(b, 49, ';');
+	file.getline(b, 50, ';');
 	a.f_name = new char[strlen(b) + 1];
 #pragma warning(suppress : 4996)
 	strcpy(a.f_name, b);
-	file.getline(b, 49, ';');
+	file.getline(b, 50, ';');
 	a.l_name = new char[strlen(b) + 1];
 #pragma warning(suppress : 4996)
 	strcpy(a.l_name, b);

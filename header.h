@@ -29,7 +29,7 @@ struct i_course
 	int course_id;
 	char* course_name;
 	char* teacher;
-	int noc;
+	int number_of_credits;
 	int day1;
 	int session1;
 	int day2;
