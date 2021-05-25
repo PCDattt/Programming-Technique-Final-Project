@@ -209,28 +209,53 @@ void create_class()
 }
 void removed_memory(gmail_student& a)
 {
+	i_s_course* d;
 	delete[]a.pw;
+	delete[]a.i_s.f_name;
+	delete[]a.i_s.l_name;
+	for (int i = 0; i < a.i_s.number_course;i++)
+	{
+		d = a.head;
+		a.head = a.head->node;
+		delete d;
+	}
 }
-void read_info_student(ifstream& file, i_student& a)
+void read_info_student(ifstream& file, gmail_student& a)
 {
+	string h;
 	char b[50];
 	file.ignore();
 	file.getline(b, 50, ';');
-	a.f_name = new char[strlen(b) + 1];
+	a.i_s.f_name = new char[strlen(b) + 1];
 #pragma warning(suppress : 4996)
-	strcpy(a.f_name, b);
+	strcpy(a.i_s.f_name, b);
 	file.getline(b, 50, ';');
-	a.l_name = new char[strlen(b) + 1];
+	a.i_s.l_name = new char[strlen(b) + 1];
 #pragma warning(suppress : 4996)
-	strcpy(a.l_name, b);
-	file >> a.date;
+	strcpy(a.i_s.l_name, b);
+	file >> a.i_s.date;
 	file.ignore();
-	file >> a.month;
+	file >> a.i_s.month;
 	file.ignore();
-	file >> a.year;
+	file >> a.i_s.year;
 	file.ignore();
-	file >> a.social_id;
-
+	file >> a.i_s.social_id;
+	file.ignore();
+	file >> a.i_s.number_course;
+	file.ignore();
+	a.head = nullptr;
+	for (int i = 0; i < a.i_s.number_course;i++)
+	{
+		i_s_course* d = new i_s_course();
+		file >> d->i_c.course_id;
+		d->node = a.head;
+		a.head = d;
+		if (i < a.i_s.number_course - 1)
+		{
+			file.ignore();
+		}
+	}
+	getline(file, h);
 }
 bool read_file_info_student(gmail_student& a)
 {
@@ -250,7 +275,7 @@ bool read_file_info_student(gmail_student& a)
 			file2 >> b;
 			if (a.name_gmail == b)
 			{
-				read_info_student(file2, a.i_s);
+				read_info_student(file2, a);
 				file.close();
 				file2.close();
 				return true;
@@ -261,6 +286,37 @@ bool read_file_info_student(gmail_student& a)
 	}
 	file.close();
 	return false;
+}
+void read_file_list_scienci(ifstream& f, i_course& a)
+{
+	char b[50];
+	f >> a.course_id;
+	f.ignore();
+	f.getline(b, 50, ';');
+	a.course_name = new char[strlen(b) + 1];
+#pragma warning(suppress : 4996)
+	strcpy(a.course_name, b);
+	f.getline(b, 50, ';');
+	a.teacher = new char[strlen(b) + 1];
+#pragma warning(suppress : 4996)
+	strcpy(a.teacher, b);
+	f >> a.n_o_credits;
+	f.ignore();
+	f >> a.n_o_student;
+	f.ignore();
+	f.getline(b, 50, ';');
+	a.day1 = new char[strlen(b) + 1];
+#pragma warning(suppress : 4996)
+	strcpy(a.day1, b);
+	f >> a.session1;
+	f.ignore();
+	f.getline(b, 50, ';');
+	a.day2 = new char[strlen(b) + 1];
+#pragma warning(suppress : 4996)
+	strcpy(a.day2, b);
+	f >> a.session2;
+	string d;
+	getline(f, d);
 }
 
 
