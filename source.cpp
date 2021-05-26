@@ -131,10 +131,11 @@ void studentlogin()
 
 	cout << endl;
 }
-bool check_email_student(gmail_student& a)
+
+bool check_account_student(account_student& a)
 {
 	ifstream f1;
-	f1.open("gmail_student.csv", ios_base::in);
+	f1.open("account_student.csv", ios_base::in);
 	if (f1.fail())
 	{
 		cout << "not file " << endl;
@@ -149,8 +150,8 @@ bool check_email_student(gmail_student& a)
 	cin.getline(y, 50);
 	while (!f1.eof())
 	{
-		read_info_email_student(f1, a);
-		if (a.name_gmail == x)
+		read_info_account_student(f1, a);
+		if (a.id == x)
 		{
 			if (strcmp(y, a.pw) == 0)
 			{
@@ -164,10 +165,11 @@ bool check_email_student(gmail_student& a)
 	f1.close();
 	return false;
 }
-void read_info_email_student(ifstream& file, gmail_student& a)
+
+void read_info_account_student(ifstream& file, account_student& a)
 {
 	char b[50];
-	file >> a.name_gmail;
+	file >> a.id;
 	file.ignore();
 	file.getline(b, 50, '\n');
 	a.pw = new char[strlen(b) + 1];
@@ -175,6 +177,21 @@ void read_info_email_student(ifstream& file, gmail_student& a)
 	strcpy(a.pw, b);
 	//file.ignore();
 }
+
+void removed_memory(account_student& a)
+{
+	i_s_course* d;
+	delete[]a.pw;
+	delete[]a.i_s.f_name;
+	delete[]a.i_s.l_name;
+	for (int i = 0; i < a.i_s.number_course; i++)
+	{
+		d = a.head;
+		a.head = a.head->node;
+		delete d;
+	}
+}
+
 void create_class()
 {
 	fstream f;
@@ -207,20 +224,8 @@ void create_class()
 	cout << " you have successfully created the class " << endl;
 	f.close();
 }
-void removed_memory(gmail_student& a)
-{
-	i_s_course* d;
-	delete[]a.pw;
-	delete[]a.i_s.f_name;
-	delete[]a.i_s.l_name;
-	for (int i = 0; i < a.i_s.number_course;i++)
-	{
-		d = a.head;
-		a.head = a.head->node;
-		delete d;
-	}
-}
-void read_info_student(ifstream& file, gmail_student& a)
+
+void read_info_student(ifstream& file, account_student& a)
 {
 	string h;
 	char b[50];
@@ -257,7 +262,8 @@ void read_info_student(ifstream& file, gmail_student& a)
 	}
 	getline(file, h);
 }
-bool read_file_info_student(gmail_student& a)
+
+bool read_file_info_student(account_student& a)
 {
 	ifstream file;
 	ifstream file2;
@@ -273,7 +279,7 @@ bool read_file_info_student(gmail_student& a)
 		while (!file2.eof())
 		{
 			file2 >> b;
-			if (a.name_gmail == b)
+			if (a.id == b)
 			{
 				read_info_student(file2, a);
 				file.close();
@@ -287,6 +293,7 @@ bool read_file_info_student(gmail_student& a)
 	file.close();
 	return false;
 }
+
 void read_file_list_scienci(ifstream& f, i_course& a)
 {
 	char b[50];

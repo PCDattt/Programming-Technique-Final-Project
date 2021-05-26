@@ -11,8 +11,9 @@ using namespace std;
 struct i_student;
 struct i_course;
 struct mark;
-struct gmail_student;
+struct account_student;
 struct i_s_course;
+
 struct i_student
 {
 	char* f_name;
@@ -36,6 +37,7 @@ struct i_course
 	int session2;
 	int n_o_student;
 };
+
 struct mark
 {
 	double total_mark;
@@ -48,25 +50,26 @@ struct i_s_course
 	i_course i_c;
 	i_s_course* node;
 };
-struct gmail_student
+
+struct account_student
 {
-	int name_gmail;
+	int id;
 	char* pw;
 	i_student i_s;
 	i_s_course* head;
 };
 
-bool check_email_student(gmail_student& a);
-void read_info_email_student(ifstream& file, gmail_student& a);
-void removed_memory(gmail_student& a);
-void create_class(fstream& f);
-bool read_file_info_student(gmail_student& a);
-void read_info_student(ifstream& file, gmail_student& a);
+void checkdate(int day, int month, int year, int& check);
 void changedate();
 void showdate();
 void stafflogin();
 void studentlogin();
-void checkdate(int day, int month, int year, int& check);
+bool check_account_student(account_student& a);
+void read_info_account_student(ifstream& file, account_student& a);
+void removed_memory(account_student& a);
+void create_class();
+void read_info_student(ifstream& file, account_student& a);
+bool read_file_info_student(account_student& a);
 void read_file_list_scienci(ifstream& f, i_course& a);
 
 #endif
