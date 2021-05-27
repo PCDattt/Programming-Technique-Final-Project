@@ -326,4 +326,20 @@ void read_file_list_scienci(ifstream& f, i_course& a)
 	getline(f, d);
 }
 
+void create_school_year()
+{
+	string school_year;
+	int start = 0;
+	int end = 0;
+	ofstream file;
+	cout << "Input start school year: ";
+	cin >> start;
+	cout << "Input end school year: ";
+	cin >> end;
+	school_year = to_string(start) + "-" + to_string(end) + ".txt";
+	file.open(school_year);
+	file.close();
+	cout << "Create school year successfully" << endl;
+}
+
 

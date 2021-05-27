@@ -8,11 +8,13 @@
 #include<ctime>
 
 using namespace std;
+
 struct i_student;
 struct i_course;
 struct mark;
-struct account_student;
 struct i_s_course;
+struct account_student;
+struct account_staff;
 
 struct i_student
 {
@@ -59,6 +61,12 @@ struct account_student
 	i_s_course* head;
 };
 
+struct account_staff
+{
+	int id;
+	char* pw;
+};
+
 void checkdate(int day, int month, int year, int& check);
 void changedate();
 void showdate();
@@ -71,5 +79,6 @@ void create_class();
 void read_info_student(ifstream& file, account_student& a);
 bool read_file_info_student(account_student& a);
 void read_file_list_scienci(ifstream& f, i_course& a);
+void create_school_year();
 
 #endif
