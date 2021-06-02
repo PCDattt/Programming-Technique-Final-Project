@@ -70,10 +70,15 @@ struct account_staff
 void checkdate(int day, int month, int year, int& check);
 void changedate();
 void showdate();
+
 void stafflogin();
+bool check_account_staff(account_staff& a);
+void read_info_account_staff(ifstream& file, account_staff& a);
+
 void studentlogin();
 bool check_account_student(account_student& a);
 void read_info_account_student(ifstream& file, account_student& a);
+
 void removed_memory(account_student& a);
 void create_class();
 void read_info_student(ifstream& file, account_student& a);

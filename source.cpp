@@ -117,6 +117,52 @@ void stafflogin()
 	cout<< endl;
 }
 
+bool check_account_staff(account_staff& a)
+{
+	ifstream f1;
+	f1.open("account_staff.csv", ios_base::in);
+	if (f1.fail())
+	{
+		cout << "not file " << endl;
+		return false;
+	}
+	int x;
+	char y[50];
+	cout << " + enter name email : ";
+	cin >> x;
+	cin.ignore();
+	cout << " + enter password :";
+	cin.getline(y, 50);
+	while (!f1.eof())
+	{
+		read_info_account_staff(f1, a);
+		if (a.id == x)
+		{
+			if (strcmp(y, a.pw) == 0)
+			{
+				f1.close();
+				return true;
+			}
+			f1.close();
+			return false;
+		}
+	}
+	f1.close();
+	return false;
+}
+
+void read_info_account_staff(ifstream& file, account_staff& a)
+{
+	char b[50];
+	file >> a.id;
+	file.ignore();
+	file.getline(b, 50, '\n');
+	a.pw = new char[strlen(b) + 1];
+#pragma warning(suppress : 4996)
+	strcpy(a.pw, b);
+	//file.ignore();
+}
+
 void studentlogin()
 {
 	char username[50];
