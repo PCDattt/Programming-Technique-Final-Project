@@ -221,7 +221,6 @@ void read_info_account_student(ifstream& file, account_student& a)
 	a.pw = new char[strlen(b) + 1];
 #pragma warning(suppress : 4996)
 	strcpy(a.pw, b);
-	//file.ignore();
 }
 
 void removed_memory(account_student& a)
@@ -301,12 +300,8 @@ void read_info_student(ifstream& file, account_student& a)
 		file >> d->i_c.course_id;
 		d->node = a.head;
 		a.head = d;
-		if (i < a.i_s.number_course - 1)
-		{
-			file.ignore();
-		}
+		file.ignore();
 	}
-	getline(file, h);
 }
 
 bool read_file_info_student(account_student& a)
@@ -340,10 +335,13 @@ bool read_file_info_student(account_student& a)
 	return false;
 }
 
-void read_file_list_scienci(ifstream& f, i_course& a)
+void read_file_list_scienci(ifstream& f, i_course& a,int n)
 {
 	char b[50];
-	f >> a.course_id;
+	if (n == 0)
+	{
+		f >> a.course_id;
+	}
 	f.ignore();
 	f.getline(b, 50, ';');
 	a.course_name = new char[strlen(b) + 1];
@@ -386,6 +384,94 @@ void create_school_year()
 	file.open(school_year);
 	file.close();
 	cout << "Create school year successfully" << endl;
+}
+void output_i_course(i_course a)
+{
+	cout << left << setw(10) << a.course_id << left << setw(15) << a.course_name << left << setw(21) << a.teacher;
+	cout << left << setw(7) << a.n_o_credits << left << setw(7) << a.n_o_student << left << setw(6) << a.day1 << left << setw(6) << a.day2;
+	int n = a.session1;
+	for (int i = 0; i < 2; i++)
+	{
+		switch (n)
+		{
+		case 1:
+		{
+			cout << left << setw(6) << "7:30";
+			break;
+		}
+		case 2:
+		{
+			cout << left << setw(6) << "9:30";
+			break;
+		}
+		case 3:
+		{
+			cout << left << setw(6) << "13:30";
+			break;
+		}
+		case 4:
+		{
+			cout << left << setw(6) << "15:30";
+			break;
+		}
+		default:
+			break;
+		}
+
+		n = a.session2;
+	}
+	cout << endl;
+}
+void removed_i_course(i_course& a)
+{
+	delete[] a.course_name;
+	delete[] a.teacher;
+	delete[]a.day1;
+	delete[]a.day2;
+}
+bool s_register(i_course b, account_staff& a)
+{
+	i_s_course* d = a.head;
+	for (int i = 0; i < a.i_s.number_course;i++)
+	{
+		if (d->i_c.course_id != b.course_id)
+		{
+			if (strcmp(d->i_c.day1, b.day1) == 0)
+			{
+				if (d->i_c.session1 == b.session1)
+				{
+					return false;
+				}
+			}
+			if (strcmp(d->i_c.day1, b.day2) == 0)
+			{
+				if (d->i_c.session1 == b.session2)
+				{
+					return false;
+				}
+			}
+			if (strcmp(d->i_c.day2, b.day1) == 0)
+			{
+				if (d->i_c.session2 == b.session1)
+				{
+					return false;
+				}
+			}
+			if (strcmp(d->i_c.day2, b.day2) == 0)
+			{
+				if (d->i_c.session2 == b.session2)
+				{
+					return false;
+				}
+			}
+		}
+		else
+		{
+			return false;
+		}
+		d = d->node;
+	}
+	return true;
 }
 
 

@@ -18,6 +18,7 @@ struct account_staff;
 
 struct i_student
 {
+	string my_class;
 	char* f_name;
 	char* l_name;
 	int date;
@@ -53,18 +54,12 @@ struct i_s_course
 	i_s_course* node;
 };
 
-struct account_student
+struct account_staff
 {
 	int id;
 	char* pw;
 	i_student i_s;
 	i_s_course* head;
-};
-
-struct account_staff
-{
-	int id;
-	char* pw;
 };
 
 void checkdate(int day, int month, int year, int& check);
@@ -83,7 +78,11 @@ void removed_memory(account_student& a);
 void create_class();
 void read_info_student(ifstream& file, account_student& a);
 bool read_file_info_student(account_student& a);
-void read_file_list_scienci(ifstream& f, i_course& a);
+void read_file_list_scienci(ifstream& f, i_course& a,int n);
 void create_school_year();
+
+void output_i_course(i_course a);
+void removed_i_course(i_course& a);
+bool s_register(i_course b, account_staff& a);
 
 #endif
