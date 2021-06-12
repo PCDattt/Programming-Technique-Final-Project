@@ -522,5 +522,93 @@ bool s_register(i_course b, account_student& a)
 	}
 	return true;
 }
+void output_file_class(account_student & a, string d)
+{
+	fstream f1;
+	i_s_course* b;
+	f1.open(d, ios::app);
+	f1 << a.id << ';' << a.i_s.f_name << ';' << a.i_s.l_name << ';' << a.i_s.date << '/' << a.i_s.month << '/' << a.i_s.year;
+	f1 << ';' << a.i_s.social_id << ';' << a.i_s.number_course << ';';
+	b = a.head;
+	for (int i = 0; i < a.i_s.number_course;i++)
+	{
+		f1 << b->i_c.course_id << ';';
+		b = b->node;
+	}
+	f1 << endl;
+	f1.close();
+}
+void output_list_course(i_s_course* a)
+{
+	cout << left << setw(10) << "id" << left << setw(15) << "course_name" << left << setw(21) << "teacher name";
+	cout << left << setw(7) << "n_o_c" << left << setw(7) << "n_o_s" << left << setw(6) << "day1" << left << setw(6) << "day2";
+	cout << left << setw(6) << "ses1" << left << setw(6) << "ses2" << endl;
+	cout << "===================================================================================" << endl;
+	while (a != nullptr)
+	{
+		output_i_course(a->i_c);
+		a = a->node;
+	}
+}
+void copy_and_remove_file(string d, string h)
+{
+	string a;
+	ifstream f1;
+	a = d + ".csv";
+	f1.open(a, ios::in);
+	ofstream f2;
+	if (f1.fail())
+	{
+		cout << "can not open file " << endl;
+		return;
+	}
+	f2.open("text.csv", ios::out);
+	getline(f1, a);
+	f2 << a;
+	while (!f1.eof())
+	{
+		getline(f1, a);
+		if (a.find(h) != 0)
+		{
+			f2 << endl;
+			f2 << a;
+		}
+	}
+	f1.close();
+	f2.close();
+	char c[20];
+	a = d + ".csv";
+	for (int j = 0; j < a.length();j++)
+	{
+		c[j] = a[j];
+	}
+	c[a.length()] = '\0';
+	remove(c);
+	rename("text.csv", c);
+}
+void View_personal_information(account_student a)
+{
+	cout << "Id : " << a.id << endl;
+	cout << "Name : " << a.i_s.f_name << " " << a.i_s.l_name << endl;
+	cout << "date/month/year : " << a.i_s.date << "/" << a.i_s.month << a.i_s.year << endl;
+	cout << "Class : " << a.i_s.my_class << endl;
+	cout << "Social id : " << a.i_s.social_id << endl;
+	cout << "Numbur course :" << a.i_s.number_course << endl;
+	output_list_course(a.head);
+}
+void value_creation(account_student & a)
+{
+	a.head = nullptr;
+	a.id = -1;
+	a.pw = nullptr;
+	a.i_s.date = -1;
+	a.i_s.month = -1;
+	a.i_s.number_course = -1;
+	a.i_s.social_id = -1;
+	a.i_s.year = -1;
+	a.i_s.my_class = "chua co";
+	a.i_s.f_name = nullptr;
+	a.i_s.l_name = nullptr;
+}
 
 

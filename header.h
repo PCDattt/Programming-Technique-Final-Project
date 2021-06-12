@@ -94,4 +94,9 @@ void output_i_course(i_course a);
 void removed_i_course(i_course& a);
 bool s_register(i_course b, account_student& a);
 
+void copy_and_remove_file(string d, string h);
+void output_file_class(account_student & a, string d);
+void output_list_course(i_s_course* a);
+void View_personal_information(account_student a);
+
 #endif
