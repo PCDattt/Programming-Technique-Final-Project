@@ -102,19 +102,67 @@ void showdate()
 	}
 }
 
+
+void get_date(int& day, int& month, int& year)
+{
+	ifstream file;
+	file.open("date.txt");
+	if (file.is_open())
+	{
+		file >> day;
+		file >> month;
+		file >> year;
+		file.close();
+	}
+	else
+	{
+		cout << "Can't open file." << endl;
+	}
+}
+
 void stafflogin()
 {
-	char username[50];
-	char pass[50];
+	account_staff a;
+	int day = 0;
+	int month = 0;
+	int year = 0;
+	int p = -1;
 
-	cout << "Enter Staff Username: ";
-	cin.ignore();
-	cin.getline(username, 50);
+	if (check_account_staff(a) == true)
+	{
+		cout << endl;
+		cout << "Staff login successfully." << endl;
+		get_date(day, month, year);
+		while (p != 4)
+		{
+			cout << "Staff option: " << endl;
+			cout << "1. Create a school year: " << endl;
+			cout << "4. Exit " << endl;
+			cout << "Choose option you want: ";
+			cin >> p;
+			cout << endl;
 
-	cout << "Enter Staff Password: ";
-	cin.getline(pass, 50);
-	
-	cout<< endl;
+			if (p == 1)
+			{
+				if (month == 9)
+				{
+					cout << "This month is September, you can create school year" << endl;
+					create_school_year();
+				}
+				else
+				{
+					cout << "This month is not September, you can not create school year" << endl;
+				}
+				cout << endl;
+			}
+		}
+	}
+	else
+	{
+		cout << "Invalid ID or password, can not log in" << endl;
+	}
+	delete[] a.pw;
+	cout << endl;
 }
 
 bool check_account_staff(account_staff& a)
@@ -385,6 +433,7 @@ void create_school_year()
 	file.close();
 	cout << "Create school year successfully" << endl;
 }
+
 void output_i_course(i_course a)
 {
 	cout << left << setw(10) << a.course_id << left << setw(15) << a.course_name << left << setw(21) << a.teacher;
@@ -429,7 +478,7 @@ void removed_i_course(i_course& a)
 	delete[]a.day1;
 	delete[]a.day2;
 }
-bool s_register(i_course b, account_staff& a)
+bool s_register(i_course b, account_student& a)
 {
 	i_s_course* d = a.head;
 	for (int i = 0; i < a.i_s.number_course;i++)

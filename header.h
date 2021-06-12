@@ -6,6 +6,7 @@
 #include <fstream>
 #include<string>
 #include<ctime>
+#include <iomanip>
 
 using namespace std;
 
@@ -54,7 +55,7 @@ struct i_s_course
 	i_s_course* node;
 };
 
-struct account_staff
+struct account_student
 {
 	int id;
 	char* pw;
@@ -62,9 +63,17 @@ struct account_staff
 	i_s_course* head;
 };
 
+
+struct account_staff
+{
+	int id;
+	char* pw;
+};
+
 void checkdate(int day, int month, int year, int& check);
 void changedate();
 void showdate();
+void get_date(int& day, int& month, int& year);
 
 void stafflogin();
 bool check_account_staff(account_staff& a);
@@ -83,6 +92,6 @@ void create_school_year();
 
 void output_i_course(i_course a);
 void removed_i_course(i_course& a);
-bool s_register(i_course b, account_staff& a);
+bool s_register(i_course b, account_student& a);
 
 #endif
