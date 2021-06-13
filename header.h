@@ -99,4 +99,6 @@ void output_file_class(account_student & a, string d);
 void output_list_course(i_s_course* a);
 void View_personal_information(account_student a);
 
+bool scienci_registration(account_student& a);
+
 #endif
