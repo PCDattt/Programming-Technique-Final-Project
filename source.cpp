@@ -423,15 +423,74 @@ void create_school_year()
 	string school_year;
 	int start = 0;
 	int end = 0;
-	ofstream file;
+	ofstream fout;
+	ifstream fin;
+
+
 	cout << "Input start school year: ";
 	cin >> start;
 	cout << "Input end school year: ";
 	cin >> end;
 	school_year = to_string(start) + "-" + to_string(end) + ".txt";
-	file.open(school_year);
-	file.close();
-	cout << "Create school year successfully" << endl;
+	fin.open(school_year); 
+	if (fin.is_open() == false)
+	{
+		fout.open(school_year);
+		fout.close();
+		cout << "Create school year successfully" << endl;
+	}
+	else
+	{
+		cout << "School year is already existed" << endl;
+	}
+	fin.close();
+}
+
+void create_semister()
+{
+	string school_year;
+	string semister;
+	int start = 0;
+	int opt = 0;
+	ofstream fout1;
+	ofstream fout2;
+	ifstream fin1;
+	ifstream fin2;
+	
+	cout << "Input the start of school year you want this semister belong to: ";
+	cin >> start;
+	school_year = to_string(start) + "-" + to_string(start + 1) + ".txt";
+	fin1.open(school_year);
+	if (fin1.is_open())
+	{
+		cout << "Input semister you want to create: " << endl;
+		cout << "1: Semister 1 " << endl;
+		cout << "2: Semister 2 " << endl;
+		cout << "3: Semister 3 " << endl;
+		cin >> opt;
+		semister = to_string(start) + "-" + to_string(start + 1) + " semister " + to_string(opt) + ".txt";
+		fin2.open(semister);
+		if (fin2.is_open())
+		{
+			cout << "Semister is already existed" << endl;
+		}
+		else
+		{
+			fout1.open(semister);
+			fout1.close();
+
+			fout2.open(school_year, ios_base::app);
+			fout2 << "Semister " << opt << endl;
+			fout2.close();
+			cout << "Create semister successfully" << endl;
+		}
+		fin2.close();
+	}
+	else
+	{
+		cout << "School year isn't existed" << endl;
+	}
+	fin1.close();
 }
 
 void output_i_course(i_course a)
@@ -683,7 +742,7 @@ bool scienci_registration(account_student& a)
 			a.i_s.number_course++;
 			fstream f1;
 			d = a.i_s.my_class;
-			h = to_string(a.name_gmail);
+			h = to_string(a.id);
 			copy_and_remove_file(d, h);
 			d = a.i_s.my_class + ".csv";
 			output_file_class(a, d);
