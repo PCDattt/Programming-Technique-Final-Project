@@ -741,5 +741,125 @@ bool scienci_registration(account_student& a)
 	}
 
 }
+void cancel_registration(account_student& a)
+{
+	if (a.head == nullptr)
+	{
+		cout << " sorry you have not course " << endl;
+		return;
+	}
+	string d;
+	string h;
+	i_s_course* b;
+	i_s_course* c;
+	int n;
+	int i = 0;
+	output_list_course(a.head);
+	cout << "enter the course id you want to delete : ";
+	cin >> n;
+	b = a.head;
+	c = b;
+	if (a.head->i_c.course_id == n)
+	{
+		c = a.head;
+		i = 1;
+		a.head = a.head->node;
+		a.i_s.number_course--;
+		c->i_c.n_o_student--;
+	}
+	else
+	{
+		while (b->node != nullptr)
+		{
+			if (n == b->node->i_c.course_id)
+			{
+				c = b->node;
+				b->node = b->node->node;
+				a.i_s.number_course--;
+				i = 1;
+				c->i_c.n_o_student--;
+				break;
+			}
+			b = b->node;
+		}
+	}
+	if (i == 0)
+	{
+		cout << "You have not registered for this course yet" << endl;
+		return;
+	}
+	d = "course_" + to_string(n);
+	h = to_string(a.id);
+	copy_and_remove_file(d, h);
+	d = a.i_s.my_class;
+	copy_and_remove_file(d, h);
+	d = a.i_s.my_class + ".csv";
+	output_file_class(a, d);
+	h = to_string(n);
+	copy_and_remove_file("list_scienci", h);
+	d = "list_scienci.csv";
+	output_file_caurse(d, c->i_c);
+	removed_i_course(c->i_c);
+	return;
+}
+double* read_mark(string d, string h)
+{
+	double* a = new double[4];
+	fstream f1;
+	f1.open(d, ios::in);
+	while (!f1.eof())
+	{
+		getline(f1, d);
+		if (d.find(h) == 0)
+		{
+			break;
+		}
+	}
+	f1.close();
+	int j = 0;
+	int g = 0;
+	int k = 0;
+	a[0] = -1;
+	a[1] = -1;
+	a[2] = -1;
+	a[3] = -1;
+	cout << d << endl;
+	for (int i = d.length() - 1;j < 4;i--)
+	{
+		if (d[i] == ';')
+		{
+			k = 0;
+			j++;
+			g = 0;
+			continue;
+		}
+		if (d[i] >= '0' && d[i] <= '9')
+		{
+			if (k == 0)
+			{
+				a[j]++;
+			}
+			a[j] = a[j] + int(d[i] - '0') * pow(10, g);
+			g++;
+			k++;
+			continue;
+		}
+		if (d[i] == '.')
+		{
+			a[j] = 1.0f * (a[j] / pow(10, g));
+			g = 0;
+		}
+
+	}
+	return a;
+}
+void  output_file_caurse(string d, i_course a)
+{
+	fstream f;
+	f.open(d, ios::app);
+	f << a.course_id << ";" << a.course_name << ';' << a.teacher << ';' << a.n_o_credits << ';' << a.n_o_student << ';';
+	f << a.day1 << ';' << a.session1 << ';' << a.day2 << ';' << a.session2 << endl;
+	f.close();
+}
 
 

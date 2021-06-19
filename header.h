@@ -101,4 +101,8 @@ void View_personal_information(account_student a);
 
 bool scienci_registration(account_student& a);
 
+void output_file_caurse(string d, i_course a);
+void cancel_registration(account_student& a);
+double* read_mark(string d, string h);
+
 #endif
