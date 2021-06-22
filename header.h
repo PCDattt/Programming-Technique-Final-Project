@@ -67,7 +67,8 @@ struct account_student
 struct account_staff
 {
 	int id;
-	char* pw;
+	string pw;
+	string name;
 };
 
 void checkdate(int day, int month, int year, int& check);

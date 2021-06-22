@@ -135,8 +135,10 @@ void stafflogin()
 		get_date(day, month, year);
 		while (p != 4)
 		{
+			cout << "Staff name: " << a.name << endl;
 			cout << "Staff option: " << endl;
-			cout << "1. Create a school year: " << endl;
+			cout << "1. Create a school year " << endl;
+			cout << "2. Create a semister " << endl;
 			cout << "4. Exit " << endl;
 			cout << "Choose option you want: ";
 			cin >> p;
@@ -153,15 +155,19 @@ void stafflogin()
 				{
 					cout << "This month is not September, you can not create school year" << endl;
 				}
-				cout << endl;
 			}
+			
+			if (p == 2)
+			{
+				create_semister();
+			}
+			cout << endl;
 		}
 	}
 	else
 	{
 		cout << "Invalid ID or password, can not log in" << endl;
 	}
-	delete[] a.pw;
 	cout << endl;
 }
 
@@ -175,18 +181,18 @@ bool check_account_staff(account_staff& a)
 		return false;
 	}
 	int x;
-	char y[50];
-	cout << " + enter name email : ";
+	string y;
+	cout << " + enter ID : ";
 	cin >> x;
 	cin.ignore();
 	cout << " + enter password :";
-	cin.getline(y, 50);
+	getline(cin, y);
 	while (!f1.eof())
 	{
 		read_info_account_staff(f1, a);
 		if (a.id == x)
 		{
-			if (strcmp(y, a.pw) == 0)
+			if (y.compare(a.pw) == 0)
 			{
 				f1.close();
 				return true;
@@ -202,12 +208,27 @@ bool check_account_staff(account_staff& a)
 void read_info_account_staff(ifstream& file, account_staff& a)
 {
 	char b[50];
+	bool check = false;
 	file >> a.id;
 	file.ignore();
 	file.getline(b, 50, '\n');
-	a.pw = new char[strlen(b) + 1];
+	for (int i = 0; i < strlen(b); i++)
+	{
+		if (check == false && b[i] != ',')
+		{
+			a.pw = a.pw + b[i];
+		}
+		if (check == true)
+		{
+			a.name = a.name + b[i];
+		}
+		if (b[i] == ',')
+		{
+			check = true;
+		}
+	}
 #pragma warning(suppress : 4996)
-	strcpy(a.pw, b);
+	
 	//file.ignore();
 }
 
@@ -237,7 +258,7 @@ bool check_account_student(account_student& a)
 	}
 	int x;
 	char y[50];
-	cout << " + enter name email : ";
+	cout << " + enter ID : ";
 	cin >> x;
 	cin.ignore();
 	cout << " + enter password :";
@@ -450,16 +471,17 @@ void create_semister()
 {
 	string school_year;
 	string semister;
-	int start = 0;
+	int startyear = 0;
 	int opt = 0;
+	int day_start, month_start, year_start, day_end, month_end, year_end;
 	ofstream fout1;
 	ofstream fout2;
 	ifstream fin1;
 	ifstream fin2;
 	
 	cout << "Input the start of school year you want this semister belong to: ";
-	cin >> start;
-	school_year = to_string(start) + "-" + to_string(start + 1) + ".txt";
+	cin >> startyear;
+	school_year = to_string(startyear) + "-" + to_string(startyear + 1) + ".txt";
 	fin1.open(school_year);
 	if (fin1.is_open())
 	{
@@ -468,7 +490,8 @@ void create_semister()
 		cout << "2: Semister 2 " << endl;
 		cout << "3: Semister 3 " << endl;
 		cin >> opt;
-		semister = to_string(start) + "-" + to_string(start + 1) + " semister " + to_string(opt) + ".txt";
+
+		semister = to_string(startyear) + "-" + to_string(startyear + 1) + " semister " + to_string(opt) + ".txt";
 		fin2.open(semister);
 		if (fin2.is_open())
 		{
@@ -479,8 +502,22 @@ void create_semister()
 			fout1.open(semister);
 			fout1.close();
 
+			cout << "Input semister's start day: ";
+			cin >> day_start;
+			cout << "Input semister's start month: ";
+			cin >> month_start;
+			cout << "Input semister's start year: ";
+			cin >> year_start;
+			cout << "Input semister's end day: ";
+			cin >> day_end;
+			cout << "Input semister's end month: ";
+			cin >> month_end;
+			cout << "Input semister's end year: ";
+			cin >> year_end;
+
 			fout2.open(school_year, ios_base::app);
-			fout2 << "Semister " << opt << endl;
+			fout2 << "Semister " << opt << " " << day_start << " " << month_start << " " << year_start << " - "
+				<< day_end << " " << month_end << " " << year_end << endl;
 			fout2.close();
 			cout << "Create semister successfully" << endl;
 		}
