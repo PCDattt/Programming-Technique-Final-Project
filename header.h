@@ -105,4 +105,7 @@ void output_file_caurse(string d, i_course a);
 void cancel_registration(account_student& a);
 double* read_mark(string d, string h);
 
+void read_student_score(account_student & a);
+void scientific_initiation(string d);
+void see_score(account_student & a);
 #endif

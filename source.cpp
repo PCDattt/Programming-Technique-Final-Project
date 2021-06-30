@@ -862,4 +862,106 @@ void  output_file_caurse(string d, i_course a)
 	f.close();
 }
 
+void read_student_score(account_student& a)
+{
+	double* b;
+	string d;
+	string h;
+	i_s_course* c;
+	c = a.head;
+	for (int i = 0; i < a.i_s.number_course;i++)
+	{
+		d = "course_" + to_string(c->i_c.course_id) + ".csv";
+		h = to_string(a.name_gmail);
+		b = read_mark(d, h);
+		c->s_mark.other_mark = b[0];
+		c->s_mark.total_mark = b[1];
+		c->s_mark.final_mark = b[2];
+		c->s_mark.midterm_mark = b[3];
+		delete[]b;
+		c = c->node;
+	}
+}
+void see_score(account_student & a)
+{
+	i_s_course* c = a.head;
+	cout << setw(10) << left << "id" << setw(15) << left << "name scourse" << setw(10) << left << "other_m" << setw(10) << left << "total_m";
+	cout << setw(10) << left << "final_m" << setw(10) << left << "midterm_m" << endl;
+	for (int i = 0; i < a.i_s.number_course;i++)
+	{
+		cout << setw(10) << left << c->i_c.course_id << setw(15) << left << c->i_c.course_name << setw(10) << left << c->s_mark.other_mark;
+		cout << setw(10) << left << c->s_mark.total_mark << setw(10) << left << c->s_mark.final_mark << setw(10) << left << c->s_mark.midterm_mark << endl;
+		c = c->node;
+	}
+}
+void scientific_initiation(string d)
+{
+	fstream f;
+	f.open(d, ios::in);
+	if (f.fail())
+	{
+		cout << "can not open file " << endl;
+		return;
+	}
+	int n = 0;
+	string h;
+	cout << "========= scientific_initiation ===========" << endl;
+	cout << "enter course id : ";
+	cin >> n;
+	while (!f.eof())
+	{
+		getline(f, h);
+		if (h.find(to_string(n)) == 0)
+		{
+			cout << "Sorry ! The course has been started " << endl;
+			return;
+		}
+	}
+	f.close();
+	f.open(d, ios::app);
+	f << n << ";";
+	cin.ignore();
+	cout << " enter name course : ";
+	getline(cin, h);
+	f << h << ";";
+	cout << " name teacher : ";
+	getline(cin, h);
+	f << h << ";";
+	cout << " enter number of credits : ";
+	cin >> n;
+	f << n << ";";
+	f << 0 << ";";
+	cin.ignore();
+	cout << " enter day 1 :";
+	getline(cin, h);
+	f << h << ";";
+	do
+	{
+		cout << " session 1 : " << endl;
+		cout << " 1: start 7h30 " << endl;
+		cout << " 2: start 9h30" << endl;
+		cout << " 3: start 13h30" << endl;
+		cout << " 4: start 15h30" << endl;
+		cout << "enter : ";
+		cin >> n;
+	} while (n < 1 || n>4);
+	f << n << ";";
+	cout << " enter day 2 : ";
+	cin.ignore();
+	getline(cin, h);
+	f << h << ";";
+	do
+	{
+		cout << " session 2 : " << endl;
+		cout << " 1: start 7h30 " << endl;
+		cout << " 2: start 9h30" << endl;
+		cout << " 3: start 13h30" << endl;
+		cout << " 4: start 15h30" << endl;
+		cout << "enter : ";
+		cin >> n;
+	} while (n < 1 || n>4);
+	f << n << endl;
+	f.close();
+}
+
 
