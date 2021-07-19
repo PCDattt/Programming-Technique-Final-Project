@@ -3,15 +3,15 @@
 int main()
 {
 
-	int o = 0;
-	while (o != 4)
+	int o = -1;
+	while (o != 0)
 	{
 		showdate();
 		cout << "Options: " << endl;
 		cout << "1. Change date " << endl;
 		cout << "2. Staff Log in " << endl;
 		cout << "3. Student Log in " << endl;
-		cout << "4. Exit " << endl;
+		cout << "0. Exit " << endl;
 		cout << "Enter option you want: ";
 		cin >> o;
 		cout << endl;

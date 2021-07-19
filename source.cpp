@@ -133,13 +133,15 @@ void stafflogin()
 		cout << endl;
 		cout << "Staff login successfully." << endl;
 		get_date(day, month, year);
-		while (p != 4)
+		while (p != 0)
 		{
 			cout << "Staff name: " << a.name << endl;
 			cout << "Staff option: " << endl;
 			cout << "1. Create a school year " << endl;
 			cout << "2. Create a semister " << endl;
-			cout << "4. Exit " << endl;
+			cout << "3. Create a class " << endl;
+			cout << "4. View list of classes" << endl;
+			cout << "0. Exit " << endl;
 			cout << "Choose option you want: ";
 			cin >> p;
 			cout << endl;
@@ -160,6 +162,16 @@ void stafflogin()
 			if (p == 2)
 			{
 				create_semister();
+			}
+
+			if (p == 3)
+			{
+				create_class();
+			}
+
+			if (p == 4)
+			{
+				view_list_of_classes();
 			}
 			cout << endl;
 		}
@@ -309,10 +321,21 @@ void removed_memory(account_student& a)
 void create_class()
 {
 	fstream f;
-	f.open("class.txt", ios_base::in);
+	fstream f2;
 	string a;
 	string d;
-	cout << "enter name class : ";
+
+	f.open("list_class.txt", ios_base::in);
+
+	if (!f.is_open())
+	{
+		f2.open("list_class.txt", ios_base::out);
+		f2.close();
+		f.open("list_class.txt", ios_base::in);
+	}
+
+	cout << "enter class's name : ";
+	cin.ignore();
 	getline(cin, d);
 	while (!f.eof())
 	{
@@ -325,18 +348,36 @@ void create_class()
 		}
 	}
 	f.close();
-	a = d + ".csv";
-	f.open(a);
-	if (f.fail())
-	{
-		cout << "You need to create a file for the student information of the class" << endl;
-		return;
-	}
+	a = d + ".txt";
+	f.open(a, ios_base::out);
 	f.close();
-	f.open("class.txt", ios::app);
-	f << endl << d;
+	f.open("list_class.txt", ios::app);
+	f << d << endl;
 	cout << " you have successfully created the class " << endl;
 	f.close();
+}
+
+void view_list_of_classes()
+{
+	ifstream file;
+	file.open("list_class.txt");
+	if (!file.is_open())
+	{
+		cout << "Don't have any class" << endl;
+		file.close();
+		return;
+	}
+	else
+	{
+		while (!file.eof())
+		{
+			string s;
+			file >> s;
+			cout << s << endl;
+		}
+		file.close();
+	}
+	
 }
 
 void read_info_student(ifstream& file, account_student& a)
@@ -567,6 +608,7 @@ void output_i_course(i_course a)
 	}
 	cout << endl;
 }
+
 void removed_i_course(i_course& a)
 {
 	delete[] a.course_name;
@@ -574,6 +616,7 @@ void removed_i_course(i_course& a)
 	delete[]a.day1;
 	delete[]a.day2;
 }
+
 bool s_register(i_course b, account_student& a)
 {
 	i_s_course* d = a.head;
@@ -618,6 +661,7 @@ bool s_register(i_course b, account_student& a)
 	}
 	return true;
 }
+
 void output_file_class(account_student & a, string d)
 {
 	fstream f1;
@@ -634,6 +678,7 @@ void output_file_class(account_student & a, string d)
 	f1 << endl;
 	f1.close();
 }
+
 void output_list_course(i_s_course* a)
 {
 	cout << left << setw(10) << "id" << left << setw(15) << "course_name" << left << setw(21) << "teacher name";
@@ -646,6 +691,7 @@ void output_list_course(i_s_course* a)
 		a = a->node;
 	}
 }
+
 void copy_and_remove_file(string d, string h)
 {
 	string a;
@@ -682,6 +728,7 @@ void copy_and_remove_file(string d, string h)
 	remove(c);
 	rename("text.csv", c);
 }
+
 void View_personal_information(account_student a)
 {
 	cout << "Id : " << a.id << endl;
@@ -692,6 +739,7 @@ void View_personal_information(account_student a)
 	cout << "Numbur course :" << a.i_s.number_course << endl;
 	output_list_course(a.head);
 }
+
 void value_creation(account_student & a)
 {
 	a.head = nullptr;
@@ -706,6 +754,7 @@ void value_creation(account_student & a)
 	a.i_s.f_name = nullptr;
 	a.i_s.l_name = nullptr;
 }
+
 bool scienci_registration(account_student& a)
 {
 	if (a.i_s.number_course < 5)
@@ -837,6 +886,7 @@ bool scienci_registration(account_student& a)
 	}
 
 }
+
 void cancel_registration(account_student& a)
 {
 	if (a.head == nullptr)
@@ -898,6 +948,7 @@ void cancel_registration(account_student& a)
 	removed_i_course(c->i_c);
 	return;
 }
+
 double* read_mark(string d, string h)
 {
 	double* a = new double[4];
@@ -949,6 +1000,7 @@ double* read_mark(string d, string h)
 	}
 	return a;
 }
+
 void  output_file_caurse(string d, i_course a)
 {
 	fstream f;
@@ -968,7 +1020,7 @@ void read_student_score(account_student& a)
 	for (int i = 0; i < a.i_s.number_course;i++)
 	{
 		d = "course_" + to_string(c->i_c.course_id) + ".csv";
-		h = to_string(a.name_gmail);
+		h = to_string(a.id);
 		b = read_mark(d, h);
 		c->s_mark.other_mark = b[0];
 		c->s_mark.total_mark = b[1];
@@ -978,6 +1030,7 @@ void read_student_score(account_student& a)
 		c = c->node;
 	}
 }
+
 void see_score(account_student & a)
 {
 	i_s_course* c = a.head;
@@ -990,6 +1043,7 @@ void see_score(account_student & a)
 		c = c->node;
 	}
 }
+
 void scientific_initiation(string d)
 {
 	fstream f;
@@ -1010,10 +1064,10 @@ void scientific_initiation(string d)
 		if (h.find(to_string(n)) == 0)
 		{
 			cout << "Sorry ! The course has been started " << endl;
+			f.close();
 			return;
 		}
 	}
-	f.close();
 	f.open(d, ios::app);
 	f << n << ";";
 	cin.ignore();

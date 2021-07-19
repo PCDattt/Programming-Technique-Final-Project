@@ -46,7 +46,8 @@ struct mark
 {
 	double total_mark;
 	double final_mark;
-	double orther_mark;
+	double other_mark;
+	double midterm_mark;
 };
 struct i_s_course
 {
@@ -86,6 +87,7 @@ void read_info_account_student(ifstream& file, account_student& a);
 
 void removed_memory(account_student& a);
 void create_class();
+void view_list_of_classes();
 void read_info_student(ifstream& file, account_student& a);
 bool read_file_info_student(account_student& a);
 void read_file_list_scienci(ifstream& f, i_course& a,int n);
