@@ -112,4 +112,7 @@ double* read_mark(string d, string h);
 void read_student_score(account_student & a);
 void scientific_initiation(string d);
 void see_score(account_student & a);
+
+void export_score_list(string& d);
+void correct_score(string& d, string& h);
 #endif

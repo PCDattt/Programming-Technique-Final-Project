@@ -1068,6 +1068,7 @@ void scientific_initiation(string d)
 			return;
 		}
 	}
+	f.close();
 	f.open(d, ios::app);
 	f << n << ";";
 	cin.ignore();
@@ -1113,5 +1114,127 @@ void scientific_initiation(string d)
 	f << n << endl;
 	f.close();
 }
+void export_score_list(string& d)
+{
+	string h;
+	string a;
+	fstream f;
+	f.open(d, ios::in);
+	if (f.fail())
+	{
+		cout << "can not open file " << endl;
+		return;
+	}
+	cout << setw(11) << left << "id" << setw(21) << left << "name " << setw(5) << left << "m_m" << setw(5) << left << "f_m";
+	cout << setw(5) << left << "t_m" << setw(5) << left << "o_m" << endl;
+	getline(f, h);
+	while (!f.eof())
+	{
+		getline(f, h, ';');
+		cout << setw(11) << left << h;
+		getline(f, h, ';');
+		a = h;
+		getline(f, h, ';');
+		a = a + " " + h;
+		cout << setw(21) << left << a;
+		getline(f, a);
+		h = "";
+		for (int i = 0; i < a.length();i++)
+		{
+			if (a[i] != ';')
+			{
+				h = h + a[i];
+			}
+			else
+			{
+				cout << setw(5) << h;
+				h = "";
+			}
+		}
+		cout << setw(5) << h;
+		cout << endl;
+	}
+	f.close();
+}
+void correct_score(string& d, string& h)
+{
+	int l = 1;
+	string a;
+	string g;
+	g = d + ".csv";
+	fstream f;
+	f.open(g, ios::in);
+	if (f.fail())
+	{
+		cout << "can not open file " << endl;
+		return;
+	}
+	while (!f.eof())
+	{
+		getline(f, a);
+		if (a.find(h) == 0)
+		{
+			l = 0;
+			break;
+		}
+	}
+	if (l)
+	{
+		cout << "Sorry there are no students in this course" << endl;
+		f.close();
+		return;
+	}
+	f.close();
+	copy_and_remove_file(d, h);
+	f.open(g, ios::app);
+	f << h << ";";
+	l = 0;
+	for (int i = h.length() + 1;l < 2;i++)
+	{
+		if (a[i] == ';')
+		{
+			l++;
+		}
+		f << a[i];
+	}
+	double n = 0;
+	cout << "enter midterm mark :";
+	cin >> n;
+	if (n >= 0)
+	{
+		f << n << ";";
+	}
+	else {
+		f << ";";
+	}
+	cout << "enter final mark :";
+	cin >> n;
+	if (n >= 0)
+	{
+		f << n << ";";
+	}
+	else {
+		f << ";";
+	}
+	cout << "enter total mark :";
+	cin >> n;
+	if (n >= 0)
+	{
+		f << n << ";";
+	}
+	else {
+		f << ";";
+	}
+	cout << "enter other mark :";
+	cin >> n;
+	if (n >= 0)
+	{
+		f << n;
+	}
+	f << endl;
+	f.close();
+	return;
+}
+
 
 
