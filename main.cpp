@@ -21,11 +21,11 @@ int main()
 		}
 		if (o == 2)
 		{
-			stafflogin();
+			staff_working();
 		}
 		if (o == 3)
 		{
-			studentlogin();
+			student_working();
 		}
 	}
 	return 0;

@@ -72,46 +72,54 @@ struct account_staff
 	string name;
 };
 
+void staff_working();
+void student_working();
+
+bool check_account_staff(account_staff& a);
+void read_info_account_staff(ifstream& file, account_staff& a);
+bool check_account_student(account_student& a);
+void read_info_account_student(ifstream& file, account_student& a);
+
 void checkdate(int day, int month, int year, int& check);
 void changedate();
 void showdate();
 void get_date(int& day, int& month, int& year);
 
-void stafflogin();
-bool check_account_staff(account_staff& a);
-void read_info_account_staff(ifstream& file, account_staff& a);
-
-void studentlogin();
-bool check_account_student(account_student& a);
-void read_info_account_student(ifstream& file, account_student& a);
-
-void removed_memory(account_student& a);
-void create_class();
-void view_list_of_classes();
-void read_info_student(ifstream& file, account_student& a);
-bool read_file_info_student(account_student& a);
-void read_file_list_scienci(ifstream& f, i_course& a,int n);
 void create_school_year();
+void create_class();
+
 void create_semister();
 
+void scientific_initiation(string d);
+
+void read_file_list_scienci(ifstream& f, i_course& a, int n);
 void output_i_course(i_course a);
 void removed_i_course(i_course& a);
+void output_file_class(account_student& a, string d);
+bool scienci_registration(account_student& a);
 bool s_register(i_course b, account_student& a);
 
-void copy_and_remove_file(string d, string h);
-void output_file_class(account_student & a, string d);
+void output_file_course(string d, i_course a);
 void output_list_course(i_s_course* a);
-void View_personal_information(account_student a);
-
-bool scienci_registration(account_student& a);
-
-void output_file_caurse(string d, i_course a);
 void cancel_registration(account_student& a);
+
+void view_list_of_classes();
+
+void read_info_student(ifstream& file, account_student& a);
+bool read_file_info_student(account_student& a);
+
+void removed_memory(account_student& a);
+
+void copy_and_remove_file(string d, string h);
+
+void view_personal_information(account_student a);
+
+void value_creation(account_student& a);
+
 double* read_mark(string d, string h);
 
 void read_student_score(account_student & a);
-void scientific_initiation(string d);
-void see_score(account_student & a);
+void view_score(account_student & a);
 
 void export_score_list(string& d);
 void correct_score(string& d, string& h);
