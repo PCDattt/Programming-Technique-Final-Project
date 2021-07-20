@@ -20,9 +20,12 @@ struct account_staff;
 struct i_student
 {
 	string my_class;
+	int No;
+	int id;
 	char* f_name;
 	char* l_name;
-	int date;
+	string gender;
+	int day;
 	int month;
 	int year;
 	int social_id;
@@ -87,10 +90,11 @@ void get_date(int& day, int& month, int& year);
 
 void create_school_year();
 void create_class();
+void add_1_student_to_class();
 
 void create_semister();
 
-void scientific_initiation(string d);
+void create_course(string d);
 
 void read_file_list_scienci(ifstream& f, i_course& a, int n);
 void output_i_course(i_course a);

@@ -21,6 +21,7 @@ void staff_working()
 			cout << "2. Create a semister " << endl;
 			cout << "3. Create a class " << endl;
 			cout << "4. View list of classes" << endl;
+			cout << "5. Add 1 student to class" << endl;
 			cout << "0. Exit " << endl;
 			cout << "Choose option you want: ";
 			cin >> p;
@@ -53,6 +54,11 @@ void staff_working()
 			{
 				view_list_of_classes();
 			}
+
+			if (p == 5)
+			{
+				add_1_student_to_class();
+			}
 			cout << endl;
 		}
 	}
@@ -84,7 +90,7 @@ bool check_account_staff(account_staff& a)
 	f1.open("account_staff.csv", ios_base::in);
 	if (f1.fail())
 	{
-		cout << "not file " << endl;
+		cout << "Can't open file account staff " << endl;
 		return false;
 	}
 	int x;
@@ -362,13 +368,69 @@ void create_class()
 		}
 	}
 	f.close();
-	a = d + ".txt";
+	a = d + ".csv";
 	f.open(a, ios_base::out);
+	f << "No,Student ID,First name,Last name,Gender,Day,Month,Year,Social ID" << endl;
 	f.close();
 	f.open("list_class.txt", ios::app);
 	f << d << endl;
-	cout << " you have successfully created the class " << endl;
+	cout << " Create class successfully " << endl;
 	f.close();
+}
+
+void add_1_student_to_class()
+{
+	string s;
+	ifstream infile;
+	ofstream file;
+	int n;
+
+	cout << "Input class's name you want to add student: ";
+	cin.ignore();
+	getline(cin, s);
+	s = s + ".csv";
+	infile.open(s);
+	if (!infile.is_open())
+	{
+		cout << "Class isn't existed" << endl;
+		infile.close();
+		return;
+	}
+	else
+	{
+		infile.close();
+		file.open(s, ios_base::app);
+		cout << "Input student's No: ";
+		cin >> n;
+		file << n << ",";
+		cout << "Input student's ID: ";
+		cin >> n;
+		file << n << ",";
+		cout << "Input student's first name: ";
+		cin.ignore();
+		getline(cin, s);
+		file << s << ",";
+		cout << "Input student's last name: ";
+		getline(cin, s);
+		file << s << ",";
+		cout << "Input student's gender: ";
+		getline(cin, s);
+		file << s << ",";
+		cout << "Input student birth's day: ";
+		cin >> n;
+		file << n << ",";
+		cout << "Input student birth's month: ";
+		cin >> n;
+		file << n << ",";
+		cout << "Input student birth's year: ";
+		cin >> n;
+		file << n << ",";
+		cout << "Input student's Social ID: ";
+		cin >> n;
+		file << n << endl;
+		cout << "Add student successfully" << endl;
+		file.close();
+	}
 }
 
 void create_semister()
@@ -434,7 +496,7 @@ void create_semister()
 	fin1.close();
 }
 
-void scientific_initiation(string d)
+void create_course(string d)
 {
 	fstream f;
 	f.open(d, ios::in);
@@ -445,7 +507,7 @@ void scientific_initiation(string d)
 	}
 	int n = 0;
 	string h;
-	cout << "========= scientific_initiation ===========" << endl;
+	cout << "========= Create course ===========" << endl;
 	cout << "enter course id : ";
 	cin >> n;
 	while (!f.eof())
@@ -591,7 +653,7 @@ void output_file_class(account_student& a, string d)
 	fstream f1;
 	i_s_course* b;
 	f1.open(d, ios::app);
-	f1 << a.id << ';' << a.i_s.f_name << ';' << a.i_s.l_name << ';' << a.i_s.date << '/' << a.i_s.month << '/' << a.i_s.year;
+	f1 << a.id << ';' << a.i_s.f_name << ';' << a.i_s.l_name << ';' << a.i_s.day << '/' << a.i_s.month << '/' << a.i_s.year;
 	f1 << ';' << a.i_s.social_id << ';' << a.i_s.number_course << ';';
 	b = a.head;
 	for (int i = 0; i < a.i_s.number_course; i++)
@@ -876,6 +938,7 @@ void view_list_of_classes()
 	}
 	else
 	{
+		cout << "List of classes: " << endl;
 		while (!file.eof())
 		{
 			string s;
@@ -899,7 +962,7 @@ void read_info_student(ifstream& file, account_student& a)
 	a.i_s.l_name = new char[strlen(b) + 1];
 #pragma warning(suppress : 4996)
 	strcpy(a.i_s.l_name, b);
-	file >> a.i_s.date;
+	file >> a.i_s.day;
 	file.ignore();
 	file >> a.i_s.month;
 	file.ignore();
@@ -1006,7 +1069,7 @@ void view_personal_information(account_student a)
 {
 	cout << "Id : " << a.id << endl;
 	cout << "Name : " << a.i_s.f_name << " " << a.i_s.l_name << endl;
-	cout << "date/month/year : " << a.i_s.date << "/" << a.i_s.month << a.i_s.year << endl;
+	cout << "date/month/year : " << a.i_s.day << "/" << a.i_s.month << a.i_s.year << endl;
 	cout << "Class : " << a.i_s.my_class << endl;
 	cout << "Social id : " << a.i_s.social_id << endl;
 	cout << "Numbur course :" << a.i_s.number_course << endl;
@@ -1018,7 +1081,7 @@ void value_creation(account_student & a)
 	a.head = nullptr;
 	a.id = -1;
 	a.pw = nullptr;
-	a.i_s.date = -1;
+	a.i_s.day = -1;
 	a.i_s.month = -1;
 	a.i_s.number_course = -1;
 	a.i_s.social_id = -1;
