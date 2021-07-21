@@ -91,15 +91,20 @@ void get_date(int& day, int& month, int& year);
 void create_school_year();
 void create_class();
 
+void view_list_of_classes();
+
 void add_1_student_to_class();
 void add_student_by_csv_file();
+
+void create_semister();
+string get_current_semister();
 
 void create_course_registration_session();
 void show_course_registration_session();
 
-void create_semister();
-
 void create_course(string d);
+
+void view_list_of_courses(string d);
 
 void read_file_list_scienci(ifstream& f, i_course& a, int n);
 void output_i_course(i_course a);
@@ -111,8 +116,6 @@ bool s_register(i_course b, account_student& a);
 void output_file_course(string d, i_course a);
 void output_list_course(i_s_course* a);
 void cancel_registration(account_student& a);
-
-void view_list_of_classes();
 
 void read_info_student(ifstream& file, account_student& a);
 bool read_file_info_student(account_student& a);
@@ -132,4 +135,5 @@ void view_score(account_student & a);
 
 void export_score_list(string& d);
 void correct_score(string& d, string& h);
+
 #endif

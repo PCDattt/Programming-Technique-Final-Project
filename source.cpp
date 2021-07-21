@@ -7,6 +7,7 @@ void staff_working()
 	int month = 0;
 	int year = 0;
 	int p = -1;
+	string current_semister;
 
 	if (check_account_staff(a) == true)
 	{
@@ -18,12 +19,14 @@ void staff_working()
 			cout << "Staff name: " << a.name << endl;
 			cout << "Staff option: " << endl;
 			cout << "1. Create a school year " << endl;
-			cout << "2. Create a semister " << endl;
-			cout << "3. Create a class " << endl;
-			cout << "4. View list of classes" << endl;
-			cout << "5. Add 1 student to class" << endl;
-			cout << "6. Add student by using csv file" << endl;
+			cout << "2. Create a class " << endl;
+			cout << "3. View list of classes" << endl;
+			cout << "4. Add 1 student to class" << endl;
+			cout << "5. Add student by using csv file" << endl;
+			cout << "6. Create a semister " << endl;
 			cout << "7. Create course registration session" << endl;
+			cout << "8. Create course" << endl;
+			cout << "9. View list of courses" << endl;
 			cout << "0. Exit " << endl;
 			cout << "Choose option you want: ";
 			cin >> p;
@@ -44,32 +47,44 @@ void staff_working()
 
 			if (p == 2)
 			{
-				create_semister();
+				create_class();
 			}
 
 			if (p == 3)
 			{
-				create_class();
+				view_list_of_classes();
 			}
 
 			if (p == 4)
 			{
-				view_list_of_classes();
+				add_1_student_to_class();
 			}
 
 			if (p == 5)
 			{
-				add_1_student_to_class();
+				add_student_by_csv_file();
 			}
 
 			if (p == 6)
 			{
-				add_student_by_csv_file();
+				create_semister();
 			}
 
 			if (p == 7)
 			{
 				create_course_registration_session();
+			}
+
+			if (p == 8)
+			{
+				current_semister = get_current_semister();
+				create_course(current_semister);
+			}
+
+			if (p == 9)
+			{
+				current_semister = get_current_semister();
+				view_list_of_courses(current_semister);
 			}
 			cout << endl;
 		}
@@ -395,6 +410,29 @@ void create_class()
 	f.close();
 }
 
+void view_list_of_classes()
+{
+	ifstream file;
+	file.open("list_class.txt");
+	if (!file.is_open())
+	{
+		cout << "Don't have any class" << endl;
+		file.close();
+		return;
+	}
+	else
+	{
+		cout << "List of classes: " << endl;
+		while (!file.eof())
+		{
+			string s;
+			file >> s;
+			cout << s << endl;
+		}
+		file.close();
+	}
+}
+
 void add_1_student_to_class()
 {
 	string s;
@@ -497,75 +535,6 @@ void add_student_by_csv_file()
 	}
 }
 
-void create_course_registration_session()
-{
-	ofstream outfile;
-	int day = 0;
-	int month = 0;
-	int year = 0;
-	int check = -1;
-
-	outfile.open("course registration.txt");
-
-	while (check != 0)
-	{
-		cout << "Input start day: ";
-		cin >> day;
-		cout << "Input start month: ";
-		cin >> month;
-		cout << "Input start year: ";
-		cin >> year;
-		check = 0;
-		cout << endl;
-		checkdate(day, month, year, check);
-	}
-
-	outfile << day << " " << month << " " << year << " ";
-
-	check = -1;
-
-	while (check != 0)
-	{
-		cout << "Input end day: ";
-		cin >> day;
-		cout << "Input end month: ";
-		cin >> month;
-		cout << "Input end year: ";
-		cin >> year;
-		check = 0;
-		cout << endl;
-		checkdate(day, month, year, check);
-	}
-
-	outfile << day << " " << month << " " << year << endl;
-}
-
-void show_course_registration_session()
-{
-	int day = 0;
-	int month = 0;
-	int year = 0;
-
-	ifstream file;
-	file.open("course registration.txt");
-	if (file.is_open())
-	{
-		file >> day;
-		file >> month;
-		file >> year;
-		cout << "Course registration is activated: " << day << " / " << month << " / " << year <<" - ";
-		file >> day;
-		file >> month;
-		file >> year;
-		cout << day << " / " << month << " / " << year << endl;
-		file.close();
-	}
-	else
-	{
-		cout << "Course registration isn't activated" << endl;
-	}
-}
-
 void create_semister()
 {
 	string school_year;
@@ -619,6 +588,29 @@ void create_semister()
 				<< day_end << " " << month_end << " " << year_end << endl;
 			fout2.close();
 			cout << "Create semister successfully" << endl;
+
+			fstream file;
+			string s;
+
+			file.open("course registration.txt", ios_base::in);
+			if (!file.is_open())
+			{
+				file.close();
+				file.open("course registration.txt", ios_base::out);
+				file << endl;
+				file << semister;
+				file.close();
+			}
+			else
+			{
+				getline(file, s, '\n');
+				file.close();
+
+				file.open("course registration.txt", ios_base::out);
+				file << s << endl;
+				file << semister;
+				file.close();
+			}
 		}
 		fin2.close();
 	}
@@ -629,13 +621,146 @@ void create_semister()
 	fin1.close();
 }
 
+string get_current_semister()
+{
+	ifstream file;
+	string s;
+
+	file.open("course registration.txt");
+	getline(file, s);
+	getline(file, s);
+	return s;
+}
+
+void create_course_registration_session()
+{
+	ofstream outfile;
+	ifstream infile;
+	int day = 0;
+	int month = 0;
+	int year = 0;
+	int check = -1;
+	string s;
+
+	infile.open("course registration.txt");
+	if (!infile.is_open())
+	{
+		infile.close();
+
+		outfile.open("course registration.txt");
+
+		while (check != 0)
+		{
+			cout << "Input start day: ";
+			cin >> day;
+			cout << "Input start month: ";
+			cin >> month;
+			cout << "Input start year: ";
+			cin >> year;
+			check = 0;
+			cout << endl;
+			checkdate(day, month, year, check);
+		}
+
+		outfile << day << " " << month << " " << year << " ";
+
+		check = -1;
+
+		while (check != 0)
+		{
+			cout << "Input end day: ";
+			cin >> day;
+			cout << "Input end month: ";
+			cin >> month;
+			cout << "Input end year: ";
+			cin >> year;
+			check = 0;
+			cout << endl;
+			checkdate(day, month, year, check);
+		}
+
+		outfile << day << " " << month << " " << year << endl;
+		outfile.close();
+	}
+	else
+	{
+		getline(infile, s);
+		getline(infile, s);
+		infile.close();
+
+		outfile.open("course registration.txt");
+
+		while (check != 0)
+		{
+			cout << "Input start day: ";
+			cin >> day;
+			cout << "Input start month: ";
+			cin >> month;
+			cout << "Input start year: ";
+			cin >> year;
+			check = 0;
+			cout << endl;
+			checkdate(day, month, year, check);
+		}
+
+		outfile << day << " " << month << " " << year << " ";
+
+		check = -1;
+
+		while (check != 0)
+		{
+			cout << "Input end day: ";
+			cin >> day;
+			cout << "Input end month: ";
+			cin >> month;
+			cout << "Input end year: ";
+			cin >> year;
+			check = 0;
+			cout << endl;
+			checkdate(day, month, year, check);
+		}
+
+		outfile << day << " " << month << " " << year << endl;
+		outfile << s;
+		outfile.close();
+	}
+
+}
+
+void show_course_registration_session()
+{
+	int day = 0;
+	int month = 0;
+	int year = 0;
+
+	ifstream file;
+	file.open("course registration.txt");
+	if (file.is_open())
+	{
+		file >> day;
+		file >> month;
+		file >> year;
+		cout << "Course registration is activated: " << day << " / " << month << " / " << year <<" - ";
+		file >> day;
+		file >> month;
+		file >> year;
+		cout << day << " / " << month << " / " << year << endl;
+		file.close();
+	}
+	else
+	{
+		cout << "Course registration isn't activated" << endl;
+	}
+}
+
 void create_course(string d)
 {
 	fstream f;
+	ofstream outfile;
 	f.open(d, ios::in);
 	if (f.fail())
 	{
-		cout << "can not open file " << endl;
+		cout << "Don't have semister, can't create course " << endl;
 		return;
 	}
 	int n = 0;
@@ -648,7 +773,7 @@ void create_course(string d)
 		getline(f, h);
 		if (h.find(to_string(n)) == 0)
 		{
-			cout << "Sorry ! The course has been started " << endl;
+			cout << "Sorry ! The course was created before " << endl;
 			f.close();
 			return;
 		}
@@ -657,16 +782,20 @@ void create_course(string d)
 	f.open(d, ios::app);
 	f << n << ";";
 	cin.ignore();
-	cout << " enter name course : ";
+	cout << " enter course's name : ";
 	getline(cin, h);
 	f << h << ";";
-	cout << " name teacher : ";
+	outfile.open(h + ".txt");
+	outfile.close();
+	cout << " enter teacher's name : ";
 	getline(cin, h);
 	f << h << ";";
 	cout << " enter number of credits : ";
 	cin >> n;
 	f << n << ";";
-	f << 0 << ";";
+	cout << " enter maximum number of student: ";
+	cin >> n;
+	f << n << ";";
 	cin.ignore();
 	cout << " enter day 1 :";
 	getline(cin, h);
@@ -697,7 +826,115 @@ void create_course(string d)
 		cin >> n;
 	} while (n < 1 || n>4);
 	f << n << endl;
+	cout << "Create course suscessfully" << endl;
 	f.close();
+}
+
+void view_list_of_courses(string d)
+{
+	ifstream infile;
+	int n = 0;
+	int id = -1;
+	string s;
+
+	infile.open(d);
+	if (!infile.is_open())
+	{
+		cout << "Don't have course to view" << endl;
+		infile.close();
+	}
+	else
+	{
+		cout << "List of course: " << endl;
+		cout << left << setw(9) << "ID" << left << setw(9) << "Name" << left << setw(14) << "Teacher";
+		cout << left << setw(14) << "Credits" << left << setw(18) << "Max Student" << left << setw(9) << "Day 1";
+		cout << left << setw(15) << "Session 1" << left << setw(9) << "Day 2" << left << setw(9) << "Session 2" << endl;
+		while (!infile.eof())
+		{
+			infile >> n;
+			if (infile.eof())
+			{
+				break;
+			}
+			cout << left << setw(9) << n;
+			//infile.ignore();
+			getline(infile, s, ';');
+			getline(infile, s, ';');
+			cout << left << setw(9) << s;
+
+			getline(infile, s, ';');
+			cout << left << setw(14) << s;
+
+			getline(infile, s, ';');
+			cout << left << setw(14) << s;
+
+			getline(infile, s, ';');
+			cout << left << setw(18) << s;
+
+			getline(infile, s, ';');
+			cout << left << setw(9) << s;
+
+			infile >> n;
+			switch (n)
+			{
+			case 1:
+			{
+				cout << left << setw(15) << "7:30";
+				break;
+			}
+			case 2:
+			{
+				cout << left << setw(15) << "9:30";
+				break;
+			}
+			case 3:
+			{
+				cout << left << setw(15) << "13:30";
+				break;
+			}
+			case 4:
+			{
+				cout << left << setw(15) << "15:30";
+				break;
+			}
+			default:
+				break;
+			}
+
+			getline(infile, s, ';');
+			getline(infile, s, ';');
+			cout << left << setw(9) << s;
+
+			infile >> n;
+			switch (n)
+			{
+			case 1:
+			{
+				cout << left << setw(9) << "7:30";
+				break;
+			}
+			case 2:
+			{
+				cout << left << setw(9) << "9:30";
+				break;
+			}
+			case 3:
+			{
+				cout << left << setw(9) << "13:30";
+				break;
+			}
+			case 4:
+			{
+				cout << left << setw(9) << "15:30";
+				break;
+			}
+			default:
+				break;
+			}
+			cout << endl;
+		}
+		infile.close();
+	}
 }
 
 void read_file_list_scienci(ifstream& f, i_course& a, int n)
@@ -1057,29 +1294,6 @@ void cancel_registration(account_student& a)
 	output_file_course(d, c->i_c);
 	removed_i_course(c->i_c);
 	return;
-}
-
-void view_list_of_classes()
-{
-	ifstream file;
-	file.open("list_class.txt");
-	if (!file.is_open())
-	{
-		cout << "Don't have any class" << endl;
-		file.close();
-		return;
-	}
-	else
-	{
-		cout << "List of classes: " << endl;
-		while (!file.eof())
-		{
-			string s;
-			file >> s;
-			cout << s << endl;
-		}
-		file.close();
-	}
 }
 
 void read_info_student(ifstream& file, account_student& a)
