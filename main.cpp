@@ -7,6 +7,7 @@ int main()
 	while (o != 0)
 	{
 		showdate();
+		show_course_registration_session();
 		cout << "Options: " << endl;
 		cout << "1. Change date " << endl;
 		cout << "2. Staff Log in " << endl;

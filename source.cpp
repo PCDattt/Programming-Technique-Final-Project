@@ -23,6 +23,7 @@ void staff_working()
 			cout << "4. View list of classes" << endl;
 			cout << "5. Add 1 student to class" << endl;
 			cout << "6. Add student by using csv file" << endl;
+			cout << "7. Create course registration session" << endl;
 			cout << "0. Exit " << endl;
 			cout << "Choose option you want: ";
 			cin >> p;
@@ -64,6 +65,11 @@ void staff_working()
 			if (p == 6)
 			{
 				add_student_by_csv_file();
+			}
+
+			if (p == 7)
+			{
+				create_course_registration_session();
 			}
 			cout << endl;
 		}
@@ -277,6 +283,7 @@ void changedate()
 	else
 	{
 		cout << "Can't open file." << endl;
+		file.close();
 	}
 }
 
@@ -298,7 +305,7 @@ void showdate()
 	}
 	else
 	{
-		cout << "Can't open file." << endl;
+		cout << "Haven't create today file" << endl;
 	}
 }
 
@@ -487,6 +494,75 @@ void add_student_by_csv_file()
 			outfile.close();
 			cout << "Add student by using csv file successfully" << endl;
 		}
+	}
+}
+
+void create_course_registration_session()
+{
+	ofstream outfile;
+	int day = 0;
+	int month = 0;
+	int year = 0;
+	int check = -1;
+
+	outfile.open("course registration.txt");
+
+	while (check != 0)
+	{
+		cout << "Input start day: ";
+		cin >> day;
+		cout << "Input start month: ";
+		cin >> month;
+		cout << "Input start year: ";
+		cin >> year;
+		check = 0;
+		cout << endl;
+		checkdate(day, month, year, check);
+	}
+
+	outfile << day << " " << month << " " << year << " ";
+
+	check = -1;
+
+	while (check != 0)
+	{
+		cout << "Input end day: ";
+		cin >> day;
+		cout << "Input end month: ";
+		cin >> month;
+		cout << "Input end year: ";
+		cin >> year;
+		check = 0;
+		cout << endl;
+		checkdate(day, month, year, check);
+	}
+
+	outfile << day << " " << month << " " << year << endl;
+}
+
+void show_course_registration_session()
+{
+	int day = 0;
+	int month = 0;
+	int year = 0;
+
+	ifstream file;
+	file.open("course registration.txt");
+	if (file.is_open())
+	{
+		file >> day;
+		file >> month;
+		file >> year;
+		cout << "Course registration is activated: " << day << " / " << month << " / " << year <<" - ";
+		file >> day;
+		file >> month;
+		file >> year;
+		cout << day << " / " << month << " / " << year << endl;
+		file.close();
+	}
+	else
+	{
+		cout << "Course registration isn't activated" << endl;
 	}
 }
 

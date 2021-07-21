@@ -94,6 +94,9 @@ void create_class();
 void add_1_student_to_class();
 void add_student_by_csv_file();
 
+void create_course_registration_session();
+void show_course_registration_session();
+
 void create_semister();
 
 void create_course(string d);
