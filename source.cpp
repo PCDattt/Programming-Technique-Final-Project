@@ -22,6 +22,7 @@ void staff_working()
 			cout << "3. Create a class " << endl;
 			cout << "4. View list of classes" << endl;
 			cout << "5. Add 1 student to class" << endl;
+			cout << "6. Add student by using csv file" << endl;
 			cout << "0. Exit " << endl;
 			cout << "Choose option you want: ";
 			cin >> p;
@@ -58,6 +59,11 @@ void staff_working()
 			if (p == 5)
 			{
 				add_1_student_to_class();
+			}
+
+			if (p == 6)
+			{
+				add_student_by_csv_file();
 			}
 			cout << endl;
 		}
@@ -434,6 +440,53 @@ void add_1_student_to_class()
 		file << n << endl;
 		cout << "Add student successfully" << endl;
 		file.close();
+	}
+}
+
+void add_student_by_csv_file()
+{
+	ifstream infile;
+	fstream outfile;
+	string s1, s2, temp;
+
+	cout << "Input csv file's name you want to use to add student: ";
+	cin.ignore();
+	getline(cin, s1);
+	s1 = s1 + ".csv";
+	infile.open(s1);
+	if (!infile.is_open())
+	{
+		cout << "Can't open csv file" << endl;
+		infile.close();
+		return;
+	}
+	else
+	{
+		cout << "Input class's name you want to add student: ";
+		getline(cin, s2);
+		s2 = s2 + ".csv";
+		outfile.open(s2, ios_base::in);
+		if (!outfile.is_open())
+		{
+			cout << "Class isn't existed" << endl;
+			infile.close();
+			outfile.close();
+			return;
+		}
+		else
+		{
+			outfile.close();
+			outfile.open(s2, ios_base::app);
+			getline(infile, temp,'\n');
+			while (!infile.eof())
+			{
+				getline(infile, temp,'\n');
+				outfile << temp << endl;
+			}
+			infile.close();
+			outfile.close();
+			cout << "Add student by using csv file successfully" << endl;
+		}
 	}
 }
 

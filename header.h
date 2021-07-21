@@ -90,7 +90,9 @@ void get_date(int& day, int& month, int& year);
 
 void create_school_year();
 void create_class();
+
 void add_1_student_to_class();
+void add_student_by_csv_file();
 
 void create_semister();
 
