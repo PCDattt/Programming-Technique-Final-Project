@@ -121,28 +121,32 @@ bool check_account_staff(account_staff& a)
 void read_info_account_staff(ifstream& file, account_staff& a)
 {
 	char b[50];
-	bool check = false;
+	int i = 0;
+
 	file >> a.id;
 	file.ignore();
 	file.getline(b, 50, '\n');
-	for (int i = 0; i < strlen(b); i++)
+
+	a.pw = b[0];
+	for (i = 1; i < strlen(b); i++)
 	{
-		if (check == false && b[i] != ',')
+		if (b[i] != ',')
 		{
 			a.pw = a.pw + b[i];
 		}
-		if (check == true)
+		else
 		{
-			a.name = a.name + b[i];
-		}
-		if (b[i] == ',')
-		{
-			check = true;
+			i = i + 1;
+			break;
 		}
 	}
-#pragma warning(suppress : 4996)
 
-	//file.ignore();
+	a.name = b[i];
+	for (i = i + 1; i < strlen(b); i++)
+	{
+		a.name = a.name + b[i];
+	}
+#pragma warning(suppress : 4996)
 }
 
 bool check_account_student(account_student& a)
