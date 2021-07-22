@@ -14,6 +14,8 @@ void staff_working()
 		cout << endl;
 		cout << "Staff login successfully." << endl;
 		get_date(day, month, year);
+		showdate();
+		show_course_registration_session();
 		while (p != 0)
 		{
 			cout << "Staff name: " << a.name << endl;
@@ -98,15 +100,39 @@ void staff_working()
 
 void student_working()
 {
-	char username[50];
-	char pass[50];
+	account_student a;
+	int day = 0;
+	int month = 0;
+	int year = 0;
+	int p = -1;
 
-	cout << "Enter Student Username: ";
-	cin.ignore();
-	cin.getline(username, 50);
+	if (check_account_student(a) == true)
+	{
+		cout << endl;
+		cout << "Student login sucessfully" << endl;
+		get_date(day, month, year);
+		showdate();
+		show_course_registration_session();
+		while (p != 0)
+		{
+			cout << "1. Enroll in a course" << endl;
+			cout << "0. Exit" << endl;
+			cout << "Choose option you want: ";
+			cin >> p;
+			cout << endl;
+			
+			if (p == 1)
+			{
 
-	cout << "Enter Student Password: ";
-	cin.getline(pass, 50);
+			}
+			
+			cout << endl;
+		}
+	}
+	else
+	{
+		cout << "Invalid ID or password, can not log in" << endl;
+	}
 
 	cout << endl;
 }
@@ -182,7 +208,7 @@ bool check_account_student(account_student& a)
 	f1.open("account_student.csv", ios_base::in);
 	if (f1.fail())
 	{
-		cout << "not file " << endl;
+		cout << "Can't open file account student " << endl;
 		return false;
 	}
 	int x;
@@ -825,7 +851,7 @@ void create_course(string d)
 		cout << "enter : ";
 		cin >> n;
 	} while (n < 1 || n>4);
-	f << n << endl;
+	f << n << ";" << 0 << endl;
 	cout << "Create course suscessfully" << endl;
 	f.close();
 }
@@ -846,9 +872,9 @@ void view_list_of_courses(string d)
 	else
 	{
 		cout << "List of course: " << endl;
-		cout << left << setw(9) << "ID" << left << setw(9) << "Name" << left << setw(14) << "Teacher";
-		cout << left << setw(14) << "Credits" << left << setw(18) << "Max Student" << left << setw(9) << "Day 1";
-		cout << left << setw(15) << "Session 1" << left << setw(9) << "Day 2" << left << setw(9) << "Session 2" << endl;
+		cout << left << setw(9) << "ID" << left << setw(9) << "Name" << left << setw(12) << "Teacher";
+		cout << left << setw(12) << "Credits" << left << setw(18) << "Max Student" << left << setw(9) << "Day 1";
+		cout << left << setw(15) << "Session 1" << left << setw(9) << "Day 2" << left << setw(14) << "Session 2" << "Registed" << endl;
 		while (!infile.eof())
 		{
 			infile >> n;
@@ -857,7 +883,6 @@ void view_list_of_courses(string d)
 				break;
 			}
 			cout << left << setw(9) << n;
-			//infile.ignore();
 			getline(infile, s, ';');
 			getline(infile, s, ';');
 			cout << left << setw(9) << s;
@@ -869,7 +894,7 @@ void view_list_of_courses(string d)
 			cout << left << setw(14) << s;
 
 			getline(infile, s, ';');
-			cout << left << setw(18) << s;
+			cout << left << setw(15) << s;
 
 			getline(infile, s, ';');
 			cout << left << setw(9) << s;
@@ -910,104 +935,33 @@ void view_list_of_courses(string d)
 			{
 			case 1:
 			{
-				cout << left << setw(9) << "7:30";
+				cout << left << setw(15) << "7:30";
 				break;
 			}
 			case 2:
 			{
-				cout << left << setw(9) << "9:30";
+				cout << left << setw(15) << "9:30";
 				break;
 			}
 			case 3:
 			{
-				cout << left << setw(9) << "13:30";
+				cout << left << setw(15) << "13:30";
 				break;
 			}
 			case 4:
 			{
-				cout << left << setw(9) << "15:30";
+				cout << left << setw(15) << "15:30";
 				break;
 			}
 			default:
 				break;
 			}
-			cout << endl;
+			getline(infile, s, ';');
+			infile >> n;
+			cout << left << setw(9) << n << endl;
 		}
 		infile.close();
 	}
-}
-
-void read_file_list_scienci(ifstream& f, i_course& a, int n)
-{
-	char b[50];
-	if (n == 0)
-	{
-		f >> a.course_id;
-	}
-	f.ignore();
-	f.getline(b, 50, ';');
-	a.course_name = new char[strlen(b) + 1];
-#pragma warning(suppress : 4996)
-	strcpy(a.course_name, b);
-	f.getline(b, 50, ';');
-	a.teacher = new char[strlen(b) + 1];
-#pragma warning(suppress : 4996)
-	strcpy(a.teacher, b);
-	f >> a.n_o_credits;
-	f.ignore();
-	f >> a.n_o_student;
-	f.ignore();
-	f.getline(b, 50, ';');
-	a.day1 = new char[strlen(b) + 1];
-#pragma warning(suppress : 4996)
-	strcpy(a.day1, b);
-	f >> a.session1;
-	f.ignore();
-	f.getline(b, 50, ';');
-	a.day2 = new char[strlen(b) + 1];
-#pragma warning(suppress : 4996)
-	strcpy(a.day2, b);
-	f >> a.session2;
-	string d;
-	getline(f, d);
-}
-
-void output_i_course(i_course a)
-{
-	cout << left << setw(10) << a.course_id << left << setw(15) << a.course_name << left << setw(21) << a.teacher;
-	cout << left << setw(7) << a.n_o_credits << left << setw(7) << a.n_o_student << left << setw(6) << a.day1 << left << setw(6) << a.day2;
-	int n = a.session1;
-	for (int i = 0; i < 2; i++)
-	{
-		switch (n)
-		{
-		case 1:
-		{
-			cout << left << setw(6) << "7:30";
-			break;
-		}
-		case 2:
-		{
-			cout << left << setw(6) << "9:30";
-			break;
-		}
-		case 3:
-		{
-			cout << left << setw(6) << "13:30";
-			break;
-		}
-		case 4:
-		{
-			cout << left << setw(6) << "15:30";
-			break;
-		}
-		default:
-			break;
-		}
-
-		n = a.session2;
-	}
-	cout << endl;
 }
 
 void removed_i_course(i_course& a)
@@ -1058,10 +1012,8 @@ bool scienci_registration(account_student& a)
 		cout << "===================================================================================" << endl;
 		while (!f.eof())
 		{
-			read_file_list_scienci(f, b, 0);
 			if (i != b.course_id)
 			{
-				output_i_course(b);
 			}
 			removed_i_course(b);
 			i = b.course_id;
@@ -1079,7 +1031,6 @@ bool scienci_registration(account_student& a)
 			f >> c->i_c.course_id;
 			if (c->i_c.course_id == i)
 			{
-				read_file_list_scienci(f, c->i_c, 1);
 				g = 0;
 				break;
 			}
@@ -1212,28 +1163,6 @@ bool s_register(i_course b, account_student& a)
 	return true;
 }
 
-void  output_file_course(string d, i_course a)
-{
-	fstream f;
-	f.open(d, ios::app);
-	f << a.course_id << ";" << a.course_name << ';' << a.teacher << ';' << a.n_o_credits << ';' << a.n_o_student << ';';
-	f << a.day1 << ';' << a.session1 << ';' << a.day2 << ';' << a.session2 << endl;
-	f.close();
-}
-
-void output_list_course(i_s_course* a)
-{
-	cout << left << setw(10) << "id" << left << setw(15) << "course_name" << left << setw(21) << "teacher name";
-	cout << left << setw(7) << "n_o_c" << left << setw(7) << "n_o_s" << left << setw(6) << "day1" << left << setw(6) << "day2";
-	cout << left << setw(6) << "ses1" << left << setw(6) << "ses2" << endl;
-	cout << "===================================================================================" << endl;
-	while (a != nullptr)
-	{
-		output_i_course(a->i_c);
-		a = a->node;
-	}
-}
-
 void cancel_registration(account_student& a)
 {
 	if (a.head == nullptr)
@@ -1247,7 +1176,6 @@ void cancel_registration(account_student& a)
 	i_s_course* c;
 	int n;
 	int i = 0;
-	output_list_course(a.head);
 	cout << "enter the course id you want to delete : ";
 	cin >> n;
 	b = a.head;
@@ -1291,7 +1219,6 @@ void cancel_registration(account_student& a)
 	h = to_string(n);
 	copy_and_remove_file("list_scienci", h);
 	d = "list_scienci.csv";
-	output_file_course(d, c->i_c);
 	removed_i_course(c->i_c);
 	return;
 }
@@ -1420,7 +1347,6 @@ void view_personal_information(account_student a)
 	cout << "Class : " << a.i_s.my_class << endl;
 	cout << "Social id : " << a.i_s.social_id << endl;
 	cout << "Numbur course :" << a.i_s.number_course << endl;
-	output_list_course(a.head);
 }
 
 void value_creation(account_student & a)

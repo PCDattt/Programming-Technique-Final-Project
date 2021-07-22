@@ -106,15 +106,11 @@ void create_course(string d);
 
 void view_list_of_courses(string d);
 
-void read_file_list_scienci(ifstream& f, i_course& a, int n);
-void output_i_course(i_course a);
 void removed_i_course(i_course& a);
 void output_file_class(account_student& a, string d);
 bool scienci_registration(account_student& a);
 bool s_register(i_course b, account_student& a);
 
-void output_file_course(string d, i_course a);
-void output_list_course(i_s_course* a);
 void cancel_registration(account_student& a);
 
 void read_info_student(ifstream& file, account_student& a);
