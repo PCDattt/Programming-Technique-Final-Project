@@ -105,6 +105,7 @@ void student_working()
 	int month = 0;
 	int year = 0;
 	int p = -1;
+	string current_semister;
 
 	if (check_account_student(a) == true)
 	{
@@ -123,7 +124,8 @@ void student_working()
 			
 			if (p == 1)
 			{
-
+				current_semister = get_current_semister();
+				enroll_in_course(current_semister);
 			}
 			
 			cout << endl;
@@ -428,7 +430,7 @@ void create_class()
 	f.close();
 	a = d + ".csv";
 	f.open(a, ios_base::out);
-	f << "No,Student ID,First name,Last name,Gender,Day,Month,Year,Social ID" << endl;
+	f << "No,Student ID,First name,Last name,Gender,Day,Month,Year,Social ID,Course Registed" << endl;
 	f.close();
 	f.open("list_class.txt", ios::app);
 	f << d << endl;
@@ -508,7 +510,7 @@ void add_1_student_to_class()
 		file << n << ",";
 		cout << "Input student's Social ID: ";
 		cin >> n;
-		file << n << endl;
+		file << n << "," << 0 << endl;
 		cout << "Add student successfully" << endl;
 		file.close();
 	}
@@ -552,7 +554,7 @@ void add_student_by_csv_file()
 			while (!infile.eof())
 			{
 				getline(infile, temp,'\n');
-				outfile << temp << endl;
+				outfile << temp << "," << 0 << endl;
 			}
 			infile.close();
 			outfile.close();
@@ -964,13 +966,35 @@ void view_list_of_courses(string d)
 	}
 }
 
-void removed_i_course(i_course& a)
+void enroll_in_course(string d)
 {
-	delete[] a.course_name;
-	delete[] a.teacher;
-	delete[]a.day1;
-	delete[]a.day2;
+	ifstream infile;
+	ofstream outfile;
+	int n = 0;
+	string s;
+
+	infile.open(d);
+	if (!infile.is_open())
+	{
+		cout << "Don't have course to enroll" << endl;
+		infile.close();
+		return;
+	}
+	else
+	{
+		cout << "List course" << endl;
+		view_list_of_courses(d);
+		cout << endl;
+		infile.close();
+
+		cout << "Enter course's name you want to enroll in";
+		getline(infile, s);
+
+		outfile.open(s + ".txt", ios_base::app);
+
+	}
 }
+
 
 void output_file_class(account_student& a, string d)
 {
@@ -987,135 +1011,6 @@ void output_file_class(account_student& a, string d)
 	}
 	f1 << endl;
 	f1.close();
-}
-
-bool scienci_registration(account_student& a)
-{
-	if (a.i_s.number_course < 5)
-	{
-		int g = 1;
-		int i = 0;
-		i_course b;
-		string d;
-		string h;
-		ifstream f;
-		f.open("list_scienci.csv", ios_base::in);
-		if (f.fail())
-		{
-			cout << "can't open file" << endl;
-			return false;
-		}
-		getline(f, d);
-		cout << left << setw(10) << "id" << left << setw(15) << "course_name" << left << setw(21) << "teacher name";
-		cout << left << setw(7) << "n_o_c" << left << setw(7) << "n_o_s" << left << setw(6) << "day1" << left << setw(6) << "day2";
-		cout << left << setw(6) << "ses1" << left << setw(6) << "ses2" << endl;
-		cout << "===================================================================================" << endl;
-		while (!f.eof())
-		{
-			if (i != b.course_id)
-			{
-			}
-			removed_i_course(b);
-			i = b.course_id;
-		}
-		f.close();
-		cout << "+ enter course id :";
-		cin >> i;
-		system("cls");
-		f.open("list_scienci.csv", ios_base::in);
-		getline(f, d);
-		i_s_course* c = new i_s_course();
-		c->node = nullptr;
-		while (!f.eof())
-		{
-			f >> c->i_c.course_id;
-			if (c->i_c.course_id == i)
-			{
-				g = 0;
-				break;
-			}
-			getline(f, d);
-		}
-		f.close();
-		if (g)
-		{
-			delete c;
-			cout << "Sorry this course is not available" << endl;
-			return false;
-		}
-		if (c->i_c.n_o_student >= 50)
-		{
-			removed_i_course(c->i_c);
-			delete c;
-			cout << "full slot" << endl;
-			return false;
-		}
-		if (s_register(c->i_c, a))
-		{
-			int n = 0;
-			c->node = a.head;
-			a.head = c;
-			a.head->i_c.n_o_student++;
-			a.i_s.number_course++;
-			fstream f1;
-			d = a.i_s.my_class;
-			h = to_string(a.id);
-			copy_and_remove_file(d, h);
-			d = a.i_s.my_class + ".csv";
-			output_file_class(a, d);
-			d = "course_" + to_string(a.head->i_c.course_id) + ".csv";
-			f1.open(d, ios::app);
-			f1 << a.id << ";" << a.i_s.f_name << ";" << a.i_s.l_name << endl;
-			f1.close();
-			f1.open("list_scienci.csv", ios::in);
-			getline(f1, d);
-			n = d.length();
-			h = to_string(a.head->i_c.course_id);
-			g = 0;
-			while (true)
-			{
-				getline(f1, d);
-				if (d.find(h) == 0)
-				{
-					n = n + 2;
-					for (int j = 0; true; j++)
-					{
-						n++;
-						if (d[j] == ';')
-						{
-							g++;
-							if (g == 4)
-							{
-								break;
-							}
-						}
-					}
-					break;
-				}
-				n = n + d.length() + 2;
-			}
-			f1.close();
-			f1.open("list_scienci.csv", ios::in | ios::out);
-			f1.seekp(n);
-			f1 << a.head->i_c.n_o_student;
-			f1.close();
-			cout << "You have successfully registered" << endl;
-			return true;
-		}
-		else
-		{
-			cout << "you cannot sign up for this course" << endl;
-			removed_i_course(c->i_c);
-			delete c;
-			return false;
-		}
-	}
-	else
-	{
-		cout << "you only have a maximum of 5 subjects in 1 semester" << endl;
-		return false;
-	}
-
 }
 
 bool s_register(i_course b, account_student& a)
@@ -1219,7 +1114,6 @@ void cancel_registration(account_student& a)
 	h = to_string(n);
 	copy_and_remove_file("list_scienci", h);
 	d = "list_scienci.csv";
-	removed_i_course(c->i_c);
 	return;
 }
 
@@ -1288,20 +1182,6 @@ bool read_file_info_student(account_student& a)
 	return false;
 }
 
-void removed_memory(account_student& a)
-{
-	i_s_course* d;
-	delete[]a.pw;
-	delete[]a.i_s.f_name;
-	delete[]a.i_s.l_name;
-	for (int i = 0; i < a.i_s.number_course; i++)
-	{
-		d = a.head;
-		a.head = a.head->node;
-		delete d;
-	}
-}
-
 void copy_and_remove_file(string d, string h)
 {
 	string a;
@@ -1338,6 +1218,8 @@ void copy_and_remove_file(string d, string h)
 	remove(c);
 	rename("text.csv", c);
 }
+
+
 
 void view_personal_information(account_student a)
 {

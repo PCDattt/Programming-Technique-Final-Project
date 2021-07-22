@@ -106,17 +106,15 @@ void create_course(string d);
 
 void view_list_of_courses(string d);
 
-void removed_i_course(i_course& a);
+void enroll_in_course(string d);
+
 void output_file_class(account_student& a, string d);
-bool scienci_registration(account_student& a);
 bool s_register(i_course b, account_student& a);
 
 void cancel_registration(account_student& a);
 
 void read_info_student(ifstream& file, account_student& a);
 bool read_file_info_student(account_student& a);
-
-void removed_memory(account_student& a);
 
 void copy_and_remove_file(string d, string h);
 
