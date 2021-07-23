@@ -19,7 +19,7 @@ struct account_staff;
 
 struct info_student
 {
-	int no;
+	string clas;
 	int id;
 	string f_name;
 	string l_name;
@@ -108,10 +108,10 @@ void get_info_student(int id, info_student& a);
 void show_info_student(info_student a);
 
 void enroll_in_course(string d,info_student& a);
+void update_course_file_after_enroll(string s, int registed, int max);
+void update_class_file_after_enroll(info_student a);
 
 void copy_and_remove_file(string d, string h);
-
-void value_creation(account_student& a);
 
 double* read_mark(string d, string h);
 

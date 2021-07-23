@@ -979,6 +979,7 @@ void get_info_student(int id,info_student &a)
 {
 	ifstream infile1, infile2;
 	string s;
+	string clas;
 	int n;
 
 	infile1.open("list_class.txt");
@@ -993,6 +994,7 @@ void get_info_student(int id,info_student &a)
 		{
 			getline(infile1, s);
 			infile2.open(s + ".csv");
+			clas = s;
 			getline(infile2, s, '\n');
 			while (!infile2.eof())
 			{
@@ -1023,6 +1025,7 @@ void get_info_student(int id,info_student &a)
 					getline(infile2, s, ',');
 					infile2 >> n;
 					a.course_registed = n;
+					a.clas = clas;
 					infile1.close();
 					infile2.close();
 					return;
@@ -1052,6 +1055,7 @@ void enroll_in_course(string d,info_student& a)
 	ifstream infile2;
 	ofstream outfile;
 	int n = 0;
+	int no = 0;
 	int max = 0;
 	int registed = 0;
 	string s, s2;
@@ -1067,7 +1071,7 @@ void enroll_in_course(string d,info_student& a)
 	{
 		if (a.course_registed == 5)
 		{
-			cout << "Already enrolled 5 courses. Can't enroll more course";
+			cout << "Already enrolled 5 courses. Can't enroll more course" << endl;
 			return;
 		}
 		else
@@ -1081,52 +1085,120 @@ void enroll_in_course(string d,info_student& a)
 			cin.ignore();
 			getline(cin, s);
 			infile2.open(s + ".txt");
-			infile2 >> registed;
-			infile2 >> max;
-			if (registed >= max)
+			if (!infile2.is_open())
 			{
-				cout << "This course had full student. Can't enroll";
+				cout << "Course isn't existed. Can't enroll" << endl;
 				infile2.close();
 				return;
 			}
 			else
 			{
-				infile2.close();
-				outfile.open(s + ".txt", ios_base::app);
-				outfile << a.id << " " << a.f_name << " " << a.l_name << endl;
-				outfile.close();
 
-				outfile.open("temp.txt");
-				outfile << registed + 1 << " " << max << endl;
-				
-				infile2.open(s + ".txt");
-				getline(infile2, s2, '\n');
-				while (!infile2.eof())
+				infile2 >> registed;
+				infile2 >> max;
+				if (registed >= max)
 				{
-					getline(infile2, s2,'\n');
-					if (infile2.eof())
-					{
-						break;
-					}
-					outfile << s2 << endl;
+					cout << "This course had full student. Can't enroll" << endl;
+					infile2.close();
+					return;
 				}
-				outfile.close();
-				infile2.close();
-				s = s + ".txt";
-				char c[20];
-				for (int j = 0; j < s.length(); j++)
+				else
 				{
-					c[j] = s[j];
-				}
-				c[s.length()] = '\0';
-				remove(c);
-				rename("temp.txt", c);
+					infile2.close();
+					outfile.open(s + ".txt", ios_base::app);
+					outfile << a.id << " " << a.f_name << " " << a.l_name << endl;
+					outfile.close();
 
-				a.course_registed = a.course_registed + 1;
-				cout << "Enroll in a course successfully" << endl;
+					update_course_file_after_enroll(s, registed, max);
+
+					a.course_registed = a.course_registed + 1;
+
+					update_class_file_after_enroll(a);
+
+					cout << "Enroll in a course successfully" << endl;
+				}
 			}
 		}
 	}
+}
+
+void update_course_file_after_enroll(string s, int registed, int max)
+{
+	string s2;
+	ofstream outfile;
+	ifstream infile2;
+
+	outfile.open("temp.txt");
+	outfile << registed + 1 << " " << max << endl;
+
+	infile2.open(s + ".txt");
+	getline(infile2, s2, '\n');
+	while (!infile2.eof())
+	{
+		getline(infile2, s2, '\n');
+		if (infile2.eof())
+		{
+			break;
+		}
+		outfile << s2 << endl;
+	}
+	outfile.close();
+	infile2.close();
+	s = s + ".txt";
+	char c[20];
+	for (int j = 0; j < s.length(); j++)
+	{
+		c[j] = s[j];
+	}
+	c[s.length()] = '\0';
+	remove(c);
+	rename("temp.txt", c);
+}
+
+void update_class_file_after_enroll(info_student a)
+{
+	ofstream outfile;
+	ifstream infile2;
+	int no = 0;
+	int n = 0;
+	string s;
+
+	outfile.open("temp.csv");
+	infile2.open(a.clas + ".csv");
+	getline(infile2, s, '\n');
+	outfile << s << endl;
+	while (!infile2.eof())
+	{
+		infile2 >> no;
+		getline(infile2, s, ',');
+		infile2 >> n;
+		if (infile2.eof())
+		{
+			break;
+		}
+		if (n != a.id)
+		{
+			getline(infile2, s, '\n');
+			outfile << no << "," << n << s << endl;
+		}
+		else
+		{
+			getline(infile2, s, '\n');
+			outfile << no << "," << n << "," << a.f_name << "," << a.l_name << "," << a.gender << "," << a.day << "," << a.month << ",";
+			outfile << a.year << "," << a.social_id << "," << a.course_registed << endl;
+		}
+	}
+	outfile.close();
+	infile2.close();
+	s = a.clas + ".csv";
+	char c[20];
+	for (int j = 0; j < s.length(); j++)
+	{
+		c[j] = s[j];
+	}
+	c[s.length()] = '\0';
+	remove(c);
+	rename("temp.csv", c);
 }
 
 void copy_and_remove_file(string d, string h)
