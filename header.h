@@ -19,7 +19,7 @@ struct account_staff;
 
 struct info_student
 {
-	int No;
+	int no;
 	int id;
 	string f_name;
 	string l_name;
@@ -51,6 +51,7 @@ struct mark
 	double other_mark;
 	double midterm_mark;
 };
+
 struct i_s_course
 {
 	mark s_mark;
@@ -62,7 +63,6 @@ struct account_student
 {
 	int id;
 	char* pw;
-	info_student i_s;
 };
 
 
@@ -107,17 +107,13 @@ void view_list_of_courses(string d);
 void get_info_student(int id, info_student& a);
 void show_info_student(info_student a);
 
-void enroll_in_course(string d);
-
-void output_file_class(account_student& a, string d);
+void enroll_in_course(string d,info_student& a);
 
 void copy_and_remove_file(string d, string h);
 
 void value_creation(account_student& a);
 
 double* read_mark(string d, string h);
-
-void read_student_score(account_student & a);
 
 void export_score_list(string& d);
 void correct_score(string& d, string& h);

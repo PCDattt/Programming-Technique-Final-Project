@@ -115,11 +115,10 @@ void student_working()
 		get_date(day, month, year);
 		showdate();
 		show_course_registration_session();
-		get_info_student(a.id, b);
-		show_info_student(b);
 		while (p != 0)
 		{
-			cout << "1. Enroll in a course" << endl;
+			cout << "1. View info student" << endl;
+			cout << "2. Enroll in a course" << endl;
 			cout << "0. Exit" << endl;
 			cout << "Choose option you want: ";
 			cin >> p;
@@ -127,8 +126,15 @@ void student_working()
 			
 			if (p == 1)
 			{
+				get_info_student(a.id, b);
+				show_info_student(b);
+			}
+
+			if (p == 2)
+			{
 				current_semister = get_current_semister();
-				enroll_in_course(current_semister);
+				get_info_student(a.id, b);
+				enroll_in_course(current_semister,b);
 			}
 			
 			cout << endl;
@@ -817,7 +823,7 @@ void create_course(string d)
 	getline(cin, h);
 	f << h << ";";
 	outfile.open(h + ".txt");
-	outfile.close();
+	outfile << 0 << " ";
 	cout << " enter teacher's name : ";
 	getline(cin, h);
 	f << h << ";";
@@ -828,6 +834,7 @@ void create_course(string d)
 	cin >> n;
 	f << n << ";";
 	cin.ignore();
+	outfile << n << endl;
 	cout << " enter day 1 :";
 	getline(cin, h);
 	f << h << ";";
@@ -856,7 +863,7 @@ void create_course(string d)
 		cout << "enter : ";
 		cin >> n;
 	} while (n < 1 || n>4);
-	f << n << ";" << 0 << endl;
+	f << n << endl;
 	cout << "Create course suscessfully" << endl;
 	f.close();
 }
@@ -879,7 +886,7 @@ void view_list_of_courses(string d)
 		cout << "List of course: " << endl;
 		cout << left << setw(9) << "ID" << left << setw(9) << "Name" << left << setw(12) << "Teacher";
 		cout << left << setw(12) << "Credits" << left << setw(18) << "Max Student" << left << setw(9) << "Day 1";
-		cout << left << setw(15) << "Session 1" << left << setw(9) << "Day 2" << left << setw(14) << "Session 2" << "Registed" << endl;
+		cout << left << setw(15) << "Session 1" << left << setw(9) << "Day 2" << left << setw(14) << "Session 2" << endl;
 		while (!infile.eof())
 		{
 			infile >> n;
@@ -961,9 +968,8 @@ void view_list_of_courses(string d)
 			default:
 				break;
 			}
-			getline(infile, s, ';');
-			infile >> n;
-			cout << left << setw(9) << n << endl;
+			getline(infile, s, '\n');
+			cout << endl;
 		}
 		infile.close();
 	}
@@ -1040,32 +1046,86 @@ void show_info_student(info_student a)
 	cout << "Course registed :" << a.course_registed << endl;
 }
 
-void enroll_in_course(string d)
+void enroll_in_course(string d,info_student& a)
 {
-	ifstream infile;
+	ifstream infile1;
+	ifstream infile2;
 	ofstream outfile;
 	int n = 0;
-	string s;
+	int max = 0;
+	int registed = 0;
+	string s, s2;
 
-	infile.open(d);
-	if (!infile.is_open())
+	infile1.open(d);
+	if (!infile1.is_open())
 	{
 		cout << "Don't have course to enroll" << endl;
-		infile.close();
+		infile1.close();
 		return;
 	}
 	else
 	{
-		cout << "List course" << endl;
-		view_list_of_courses(d);
-		cout << endl;
-		infile.close();
+		if (a.course_registed == 5)
+		{
+			cout << "Already enrolled 5 courses. Can't enroll more course";
+			return;
+		}
+		else
+		{
+			cout << "List course" << endl;
+			view_list_of_courses(d);
+			cout << endl;
+			infile1.close();
 
-		cout << "Enter course's name you want to enroll in";
-		getline(infile, s);
+			cout << "Enter course's name you want to enroll in: ";
+			cin.ignore();
+			getline(cin, s);
+			infile2.open(s + ".txt");
+			infile2 >> registed;
+			infile2 >> max;
+			if (registed >= max)
+			{
+				cout << "This course had full student. Can't enroll";
+				infile2.close();
+				return;
+			}
+			else
+			{
+				infile2.close();
+				outfile.open(s + ".txt", ios_base::app);
+				outfile << a.id << " " << a.f_name << " " << a.l_name << endl;
+				outfile.close();
 
-		outfile.open(s + ".txt", ios_base::app);
+				outfile.open("temp.txt");
+				outfile << registed + 1 << " " << max << endl;
+				
+				infile2.open(s + ".txt");
+				getline(infile2, s2, '\n');
+				while (!infile2.eof())
+				{
+					getline(infile2, s2,'\n');
+					if (infile2.eof())
+					{
+						break;
+					}
+					outfile << s2 << endl;
+				}
+				outfile.close();
+				infile2.close();
+				s = s + ".txt";
+				char c[20];
+				for (int j = 0; j < s.length(); j++)
+				{
+					c[j] = s[j];
+				}
+				c[s.length()] = '\0';
+				remove(c);
+				rename("temp.txt", c);
 
+				a.course_registed = a.course_registed + 1;
+				cout << "Enroll in a course successfully" << endl;
+			}
+		}
 	}
 }
 
@@ -1104,19 +1164,6 @@ void copy_and_remove_file(string d, string h)
 	c[a.length()] = '\0';
 	remove(c);
 	rename("text.csv", c);
-}
-
-void value_creation(account_student & a)
-{
-	a.id = -1;
-	a.pw = nullptr;
-	a.i_s.day = -1;
-	a.i_s.month = -1;
-	a.i_s.course_registed = -1;
-	a.i_s.social_id = -1;
-	a.i_s.year = -1;
-	a.i_s.f_name = nullptr;
-	a.i_s.l_name = nullptr;
 }
 
 double* read_mark(string d, string h)
