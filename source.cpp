@@ -101,6 +101,7 @@ void staff_working()
 void student_working()
 {
 	account_student a;
+	info_student b;
 	int day = 0;
 	int month = 0;
 	int year = 0;
@@ -114,6 +115,8 @@ void student_working()
 		get_date(day, month, year);
 		showdate();
 		show_course_registration_session();
+		get_info_student(a.id, b);
+		show_info_student(b);
 		while (p != 0)
 		{
 			cout << "1. Enroll in a course" << endl;
@@ -794,7 +797,7 @@ void create_course(string d)
 	int n = 0;
 	string h;
 	cout << "========= Create course ===========" << endl;
-	cout << "enter course id : ";
+	cout << " enter course id : ";
 	cin >> n;
 	while (!f.eof())
 	{
@@ -966,6 +969,77 @@ void view_list_of_courses(string d)
 	}
 }
 
+void get_info_student(int id,info_student &a)
+{
+	ifstream infile1, infile2;
+	string s;
+	int n;
+
+	infile1.open("list_class.txt");
+	if (!infile1.is_open())
+	{
+		cout << "Don't have any class to get student's info" << endl;
+		infile1.close();
+	}
+	else
+	{
+		while (!infile1.eof())
+		{
+			getline(infile1, s);
+			infile2.open(s + ".csv");
+			getline(infile2, s, '\n');
+			while (!infile2.eof())
+			{
+				infile2 >> n;
+				getline(infile2, s, ',');
+				infile2 >> n;
+				if (n == id)
+				{
+					a.id = n;
+					getline(infile2, s, ',');
+					getline(infile2, s, ',');
+					a.f_name = s;
+					getline(infile2, s, ',');
+					a.l_name = s;
+					getline(infile2, s, ',');
+					a.gender = s;
+					infile2 >> n;
+					a.day = n;
+					getline(infile2, s, ',');
+					infile2 >> n;
+					a.month = n;
+					getline(infile2, s, ',');
+					infile2 >> n;
+					a.year = n;
+					getline(infile2, s, ',');
+					infile2 >> n;
+					a.social_id = n;
+					getline(infile2, s, ',');
+					infile2 >> n;
+					a.course_registed = n;
+					infile1.close();
+					infile2.close();
+					return;
+				}
+				getline(infile2, s, '\n');
+			}
+			infile2.close();
+		}
+		cout << "Can't find student's info" << endl;
+		infile1.close();
+	}
+}
+
+void show_info_student(info_student a)
+{
+	cout << "Id : " << a.id << endl;
+	cout << "Name : " << a.f_name << " " << a.l_name << endl;
+	cout << "Gender : " << a.gender << endl;
+	cout << "date/month/year : " << a.day << "/" << a.month << "/" << a.year << endl;
+	cout << "Social id : " << a.social_id << endl;
+	cout << "Course registed :" << a.course_registed << endl;
+}
+
 void enroll_in_course(string d)
 {
 	ifstream infile;
@@ -993,193 +1067,6 @@ void enroll_in_course(string d)
 		outfile.open(s + ".txt", ios_base::app);
 
 	}
-}
-
-
-void output_file_class(account_student& a, string d)
-{
-	fstream f1;
-	i_s_course* b;
-	f1.open(d, ios::app);
-	f1 << a.id << ';' << a.i_s.f_name << ';' << a.i_s.l_name << ';' << a.i_s.day << '/' << a.i_s.month << '/' << a.i_s.year;
-	f1 << ';' << a.i_s.social_id << ';' << a.i_s.number_course << ';';
-	b = a.head;
-	for (int i = 0; i < a.i_s.number_course; i++)
-	{
-		f1 << b->i_c.course_id << ';';
-		b = b->node;
-	}
-	f1 << endl;
-	f1.close();
-}
-
-bool s_register(i_course b, account_student& a)
-{
-	i_s_course* d = a.head;
-	for (int i = 0; i < a.i_s.number_course; i++)
-	{
-		if (d->i_c.course_id != b.course_id)
-		{
-			if (strcmp(d->i_c.day1, b.day1) == 0)
-			{
-				if (d->i_c.session1 == b.session1)
-				{
-					return false;
-				}
-			}
-			if (strcmp(d->i_c.day1, b.day2) == 0)
-			{
-				if (d->i_c.session1 == b.session2)
-				{
-					return false;
-				}
-			}
-			if (strcmp(d->i_c.day2, b.day1) == 0)
-			{
-				if (d->i_c.session2 == b.session1)
-				{
-					return false;
-				}
-			}
-			if (strcmp(d->i_c.day2, b.day2) == 0)
-			{
-				if (d->i_c.session2 == b.session2)
-				{
-					return false;
-				}
-			}
-		}
-		else
-		{
-			return false;
-		}
-		d = d->node;
-	}
-	return true;
-}
-
-void cancel_registration(account_student& a)
-{
-	if (a.head == nullptr)
-	{
-		cout << " sorry you have not course " << endl;
-		return;
-	}
-	string d;
-	string h;
-	i_s_course* b;
-	i_s_course* c;
-	int n;
-	int i = 0;
-	cout << "enter the course id you want to delete : ";
-	cin >> n;
-	b = a.head;
-	c = b;
-	if (a.head->i_c.course_id == n)
-	{
-		c = a.head;
-		i = 1;
-		a.head = a.head->node;
-		a.i_s.number_course--;
-		c->i_c.n_o_student--;
-	}
-	else
-	{
-		while (b->node != nullptr)
-		{
-			if (n == b->node->i_c.course_id)
-			{
-				c = b->node;
-				b->node = b->node->node;
-				a.i_s.number_course--;
-				i = 1;
-				c->i_c.n_o_student--;
-				break;
-			}
-			b = b->node;
-		}
-	}
-	if (i == 0)
-	{
-		cout << "You have not registered for this course yet" << endl;
-		return;
-	}
-	d = "course_" + to_string(n);
-	h = to_string(a.id);
-	copy_and_remove_file(d, h);
-	d = a.i_s.my_class;
-	copy_and_remove_file(d, h);
-	d = a.i_s.my_class + ".csv";
-	output_file_class(a, d);
-	h = to_string(n);
-	copy_and_remove_file("list_scienci", h);
-	d = "list_scienci.csv";
-	return;
-}
-
-void read_info_student(ifstream& file, account_student& a)
-{
-	string h;
-	char b[50];
-	file.ignore();
-	file.getline(b, 50, ';');
-	a.i_s.f_name = new char[strlen(b) + 1];
-#pragma warning(suppress : 4996)
-	strcpy(a.i_s.f_name, b);
-	file.getline(b, 50, ';');
-	a.i_s.l_name = new char[strlen(b) + 1];
-#pragma warning(suppress : 4996)
-	strcpy(a.i_s.l_name, b);
-	file >> a.i_s.day;
-	file.ignore();
-	file >> a.i_s.month;
-	file.ignore();
-	file >> a.i_s.year;
-	file.ignore();
-	file >> a.i_s.social_id;
-	file.ignore();
-	file >> a.i_s.number_course;
-	file.ignore();
-	a.head = nullptr;
-	for (int i = 0; i < a.i_s.number_course; i++)
-	{
-		i_s_course* d = new i_s_course();
-		file >> d->i_c.course_id;
-		d->node = a.head;
-		a.head = d;
-		file.ignore();
-	}
-}
-
-bool read_file_info_student(account_student& a)
-{
-	ifstream file;
-	ifstream file2;
-	string d;
-	int b = 0;
-	file.open("list_class.txt", ios_base::in);
-	while (!file.eof())
-	{
-		getline(file, d, '\n');
-		d = d + ".csv";
-		file2.open(d, ios::in);
-		getline(file2, d, '\n');
-		while (!file2.eof())
-		{
-			file2 >> b;
-			if (a.id == b)
-			{
-				read_info_student(file2, a);
-				file.close();
-				file2.close();
-				return true;
-			}
-			getline(file2, d, '\n');
-		}
-		file2.close();
-	}
-	file.close();
-	return false;
 }
 
 void copy_and_remove_file(string d, string h)
@@ -1219,29 +1106,15 @@ void copy_and_remove_file(string d, string h)
 	rename("text.csv", c);
 }
 
-
-
-void view_personal_information(account_student a)
-{
-	cout << "Id : " << a.id << endl;
-	cout << "Name : " << a.i_s.f_name << " " << a.i_s.l_name << endl;
-	cout << "date/month/year : " << a.i_s.day << "/" << a.i_s.month << a.i_s.year << endl;
-	cout << "Class : " << a.i_s.my_class << endl;
-	cout << "Social id : " << a.i_s.social_id << endl;
-	cout << "Numbur course :" << a.i_s.number_course << endl;
-}
-
 void value_creation(account_student & a)
 {
-	a.head = nullptr;
 	a.id = -1;
 	a.pw = nullptr;
 	a.i_s.day = -1;
 	a.i_s.month = -1;
-	a.i_s.number_course = -1;
+	a.i_s.course_registed = -1;
 	a.i_s.social_id = -1;
 	a.i_s.year = -1;
-	a.i_s.my_class = "chua co";
 	a.i_s.f_name = nullptr;
 	a.i_s.l_name = nullptr;
 }
@@ -1296,40 +1169,6 @@ double* read_mark(string d, string h)
 
 	}
 	return a;
-}
-
-void read_student_score(account_student& a)
-{
-	double* b;
-	string d;
-	string h;
-	i_s_course* c;
-	c = a.head;
-	for (int i = 0; i < a.i_s.number_course;i++)
-	{
-		d = "course_" + to_string(c->i_c.course_id) + ".csv";
-		h = to_string(a.id);
-		b = read_mark(d, h);
-		c->s_mark.other_mark = b[0];
-		c->s_mark.total_mark = b[1];
-		c->s_mark.final_mark = b[2];
-		c->s_mark.midterm_mark = b[3];
-		delete[]b;
-		c = c->node;
-	}
-}
-
-void view_score(account_student & a)
-{
-	i_s_course* c = a.head;
-	cout << setw(10) << left << "id" << setw(15) << left << "name scourse" << setw(10) << left << "other_m" << setw(10) << left << "total_m";
-	cout << setw(10) << left << "final_m" << setw(10) << left << "midterm_m" << endl;
-	for (int i = 0; i < a.i_s.number_course;i++)
-	{
-		cout << setw(10) << left << c->i_c.course_id << setw(15) << left << c->i_c.course_name << setw(10) << left << c->s_mark.other_mark;
-		cout << setw(10) << left << c->s_mark.total_mark << setw(10) << left << c->s_mark.final_mark << setw(10) << left << c->s_mark.midterm_mark << endl;
-		c = c->node;
-	}
 }
 
 void export_score_list(string& d)

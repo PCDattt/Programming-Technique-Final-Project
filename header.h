@@ -17,19 +17,18 @@ struct i_s_course;
 struct account_student;
 struct account_staff;
 
-struct i_student
+struct info_student
 {
-	string my_class;
 	int No;
 	int id;
-	char* f_name;
-	char* l_name;
+	string f_name;
+	string l_name;
 	string gender;
 	int day;
 	int month;
 	int year;
 	int social_id;
-	int number_course;
+	int course_registed;
 };
 
 struct i_course
@@ -63,8 +62,7 @@ struct account_student
 {
 	int id;
 	char* pw;
-	i_student i_s;
-	i_s_course* head;
+	info_student i_s;
 };
 
 
@@ -106,26 +104,20 @@ void create_course(string d);
 
 void view_list_of_courses(string d);
 
+void get_info_student(int id, info_student& a);
+void show_info_student(info_student a);
+
 void enroll_in_course(string d);
 
 void output_file_class(account_student& a, string d);
-bool s_register(i_course b, account_student& a);
-
-void cancel_registration(account_student& a);
-
-void read_info_student(ifstream& file, account_student& a);
-bool read_file_info_student(account_student& a);
 
 void copy_and_remove_file(string d, string h);
-
-void view_personal_information(account_student a);
 
 void value_creation(account_student& a);
 
 double* read_mark(string d, string h);
 
 void read_student_score(account_student & a);
-void view_score(account_student & a);
 
 void export_score_list(string& d);
 void correct_score(string& d, string& h);
