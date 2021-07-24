@@ -113,6 +113,8 @@ void enroll_in_course(string d,info_student& a);
 void update_course_file_after_enroll(string s, int registed, int max);
 void update_class_file_after_enroll(info_student a);
 
+void view_list_enrolled(string d, info_student a);
+
 double* read_mark(string d, string h);
 
 void export_score_list(string& d);

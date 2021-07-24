@@ -30,6 +30,7 @@ void staff_working()
 			cout << "8. Create course" << endl;
 			cout << "9. View list of courses" << endl;
 			cout << "10. Update course info" << endl;
+			cout << "11. Delete course" << endl;
 			cout << "0. Exit " << endl;
 			cout << "Choose option you want: ";
 			cin >> p;
@@ -95,6 +96,12 @@ void staff_working()
 				current_semister = get_current_semister();
 				update_course_info(current_semister);
 			}
+
+			if (p == 11)
+			{
+				current_semister = get_current_semister();
+				delete_course(current_semister);
+			}
 			cout << endl;
 		}
 	}
@@ -126,6 +133,10 @@ void student_working()
 		{
 			cout << "1. View info student" << endl;
 			cout << "2. Enroll in a course" << endl;
+			cout << "3. View list of erolled courses" << endl;
+			cout << "4. View list of courses will study in" << endl;
+			cout << "5. View list of class" << endl;
+			cout << "7. View list of courses" << endl;
 			cout << "0. Exit" << endl;
 			cout << "Choose option you want: ";
 			cin >> p;
@@ -144,6 +155,31 @@ void student_working()
 				enroll_in_course(current_semister,b);
 			}
 			
+			if (p == 3)
+			{
+				current_semister = get_current_semister();
+				get_info_student(a.id, b);
+				view_list_enrolled(current_semister, b);
+			}
+			
+			if (p == 4)
+			{
+				current_semister = get_current_semister();
+				get_info_student(a.id, b);
+				view_list_enrolled(current_semister, b);
+			}
+
+			if (p == 5)
+			{
+				view_list_of_classes();
+			}
+
+			if (p == 7)
+			{
+				current_semister = get_current_semister();
+				view_list_of_courses(current_semister);
+			}
+
 			cout << endl;
 		}
 	}
@@ -997,7 +1033,9 @@ void update_course_info(string d)
 		cout << "Don't have course to update info" << endl;
 		infile.close();
 	}
+	else
 	{
+		view_list_of_courses(d);
 		cout << "Input course's id you want to update info: ";
 		cin >> id;
 		outfile1.open("temp.txt");
@@ -1084,6 +1122,70 @@ void update_course_info(string d)
 		c[d.length()] = '\0';
 		remove(c);
 		rename("temp.txt", c);
+	}
+}
+
+void delete_course(string d)
+{
+	ifstream infile;
+	ofstream outfile;
+	int n = 0;
+	int id = 0;
+	string s;
+	char c[30];
+	char f[30];
+
+	infile.open(d);
+	if (!infile.is_open())
+	{
+		cout << "Don't have course to delete";
+		infile.close();
+		return;
+	}
+	else
+	{
+		outfile.open("temp.txt");
+		view_list_of_courses(d);
+		cout << endl;
+		cout << "Input course's id you want to delete: ";
+		cin >> id;
+		while (!infile.eof())
+		{
+			infile >> n;
+			if (infile.eof())
+			{
+				break;
+			}
+			if (n != id)
+			{
+				outfile << n;
+				getline(infile, s, '\n');
+				outfile << s << endl;
+			}
+			else
+			{
+				getline(infile, s, ';');
+				getline(infile, s, ';');
+				s = s + ".txt";
+				for (int j = 0; j < s.length(); j++)
+				{
+					c[j] = s[j];
+				}
+				c[s.length()] = '\0';
+				remove(c);
+				getline(infile, s, '\n');
+				cout << "Delete course successfully" << endl;
+			}
+		}
+		outfile.close();
+		infile.close();
+		for (int j = 0; j < d.length(); j++)
+		{
+			f[j] = d[j];
+		}
+		f[d.length()] = '\0';
+		remove(f);
+		rename("temp.txt", f);
 	}
 }
 
@@ -1313,41 +1415,53 @@ void update_class_file_after_enroll(info_student a)
 	rename("temp.csv", c);
 }
 
-void copy_and_remove_file(string d, string h)
+void view_list_enrolled(string d, info_student a)
 {
-	string a;
-	ifstream f1;
-	a = d + ".csv";
-	f1.open(a, ios::in);
-	ofstream f2;
-	if (f1.fail())
+	ifstream infile1, infile2;
+	int id_clas = 0;
+	int id_student = 0;
+	int n = 0;
+	string clas;
+	string s;
+
+	infile1.open(d);
+	if (infile1.is_open())
 	{
-		cout << "can not open file " << endl;
-		return;
-	}
-	f2.open("text.csv", ios::out);
-	getline(f1, a);
-	f2 << a;
-	while (!f1.eof())
-	{
-		getline(f1, a);
-		if (a.find(h) != 0)
+		cout << "List enrolled course: " << endl;
+		cout << "ID    " << "Course's name" << endl;
+		while (!infile1.eof())
 		{
-			f2 << endl;
-			f2 << a;
+			infile1 >> id_clas;
+			getline(infile1, s, ';');
+			getline(infile1, clas, ';');
+
+			if (infile1.eof())
+			{
+				break;
+			}
+
+			infile2.open(clas + ".txt");
+			getline(infile2, s, '\n');
+			while (!infile2.eof())
+			{
+				infile2 >> id_student;
+				if (infile2.eof())
+				{
+					break;
+				}
+
+				if (id_student == a.id)
+				{
+					cout << id_clas << "    " << clas << endl;
+					break;
+				}
+				getline(infile1, s, '\n');
+			}
+			infile2.close();
+			getline(infile1, s, '\n');
 		}
+		infile1.close();
 	}
-	f1.close();
-	f2.close();
-	char c[20];
-	a = d + ".csv";
-	for (int j = 0; j < a.length();j++)
-	{
-		c[j] = a[j];
-	}
-	c[a.length()] = '\0';
-	remove(c);
-	rename("text.csv", c);
 }
 
 double* read_mark(string d, string h)
@@ -1474,7 +1588,6 @@ void correct_score(string& d, string& h)
 		return;
 	}
 	f.close();
-	copy_and_remove_file(d, h);
 	f.open(g, ios::app);
 	f << h << ";";
 	l = 0;
