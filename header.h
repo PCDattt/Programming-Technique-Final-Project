@@ -104,6 +104,7 @@ void create_course(string d);
 
 void view_list_of_courses(string d);
 void update_course_info(string d);
+void delete_course(string d);
 
 void get_info_student(int id, info_student& a);
 void show_info_student(info_student a);
@@ -111,8 +112,6 @@ void show_info_student(info_student a);
 void enroll_in_course(string d,info_student& a);
 void update_course_file_after_enroll(string s, int registed, int max);
 void update_class_file_after_enroll(info_student a);
-
-void copy_and_remove_file(string d, string h);
 
 double* read_mark(string d, string h);
 
