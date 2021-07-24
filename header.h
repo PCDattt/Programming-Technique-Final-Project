@@ -103,6 +103,7 @@ void show_course_registration_session();
 void create_course(string d);
 
 void view_list_of_courses(string d);
+void update_course_info(string d);
 
 void get_info_student(int id, info_student& a);
 void show_info_student(info_student a);

@@ -29,6 +29,7 @@ void staff_working()
 			cout << "7. Create course registration session" << endl;
 			cout << "8. Create course" << endl;
 			cout << "9. View list of courses" << endl;
+			cout << "10. Update course info" << endl;
 			cout << "0. Exit " << endl;
 			cout << "Choose option you want: ";
 			cin >> p;
@@ -87,6 +88,12 @@ void staff_working()
 			{
 				current_semister = get_current_semister();
 				view_list_of_courses(current_semister);
+			}
+
+			if (p == 10)
+			{
+				current_semister = get_current_semister();
+				update_course_info(current_semister);
 			}
 			cout << endl;
 		}
@@ -972,6 +979,111 @@ void view_list_of_courses(string d)
 			cout << endl;
 		}
 		infile.close();
+	}
+}
+
+void update_course_info(string d)
+{
+	ifstream infile;
+	ofstream outfile1, outfile2;
+	string s;
+	string h;
+	int id;
+	int n;
+
+	infile.open(d);
+	if (!infile.is_open())
+	{
+		cout << "Don't have course to update info" << endl;
+		infile.close();
+	}
+	{
+		cout << "Input course's id you want to update info: ";
+		cin >> id;
+		outfile1.open("temp.txt");
+		while (!infile.eof())
+		{
+			infile >> n;
+			if (infile.eof())
+			{
+				break;
+			}
+			if (n != id)
+			{
+				outfile1 << n;
+				getline(infile, s, '\n');
+				outfile1 << s << endl;
+			}
+			else
+			{
+				outfile1 << id << ";";
+				getline(infile, s, ';');
+				getline(infile, s, ';');
+				outfile1 << s << ";";
+
+				outfile2.open(s + ".txt");
+				outfile2 << 0 << " ";
+
+				getline(infile, s, '\n');
+
+				cout << "Update course info: " << endl;
+				cin.ignore();
+				cout << " enter teacher's name : ";
+				getline(cin, h);
+				outfile1 << h << ";";
+				cout << " enter number of credits : ";
+				cin >> n;
+				outfile1 << n << ";";
+				cout << " enter maximum number of student: ";
+				cin >> n;
+				outfile1 << n << ";";
+				cin.ignore();
+
+				outfile2 << n << endl;
+				outfile2.close();
+
+				cout << " enter day 1 :";
+				getline(cin, h);
+				outfile1 << h << ";";
+				do
+				{
+					cout << " session 1 : " << endl;
+					cout << " 1: start 7h30 " << endl;
+					cout << " 2: start 9h30" << endl;
+					cout << " 3: start 13h30" << endl;
+					cout << " 4: start 15h30" << endl;
+					cout << "enter : ";
+					cin >> n;
+				} while (n < 1 || n>4);
+				outfile1 << n << ";";
+				cout << " enter day 2 : ";
+				cin.ignore();
+				getline(cin, h);
+				outfile1 << h << ";";
+				do
+				{
+					cout << " session 2 : " << endl;
+					cout << " 1: start 7h30 " << endl;
+					cout << " 2: start 9h30" << endl;
+					cout << " 3: start 13h30" << endl;
+					cout << " 4: start 15h30" << endl;
+					cout << "enter : ";
+					cin >> n;
+				} while (n < 1 || n>4);
+				outfile1 << n << endl;
+				cout << "Update course info suscessfully" << endl;
+			}
+		}
+		infile.close();
+		outfile1.close();
+		char c[30];
+		for (int j = 0; j < d.length(); j++)
+		{
+			c[j] = d[j];
+		}
+		c[d.length()] = '\0';
+		remove(c);
+		rename("temp.txt", c);
 	}
 }
 
