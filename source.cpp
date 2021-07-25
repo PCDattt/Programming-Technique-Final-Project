@@ -136,6 +136,7 @@ void student_working()
 			cout << "3. View list of erolled courses" << endl;
 			cout << "4. View list of courses will study in" << endl;
 			cout << "5. View list of class" << endl;
+			cout << "6. View list of students in a class" << endl;
 			cout << "7. View list of courses" << endl;
 			cout << "0. Exit" << endl;
 			cout << "Choose option you want: ";
@@ -172,6 +173,12 @@ void student_working()
 			if (p == 5)
 			{
 				view_list_of_classes();
+			}
+
+			if (p == 6)
+			{
+				view_list_of_classes();
+				view_list_of_students_in_class();
 			}
 
 			if (p == 7)
@@ -420,6 +427,16 @@ void get_date(int& day, int& month, int& year)
 	{
 		cout << "Can't open file." << endl;
 	}
+}
+
+int count_dates(int day, int month, int year)
+{
+	if (month < 3)
+	{
+		year = year - 1;
+		month = month + 12;
+	}
+	return 365 * year + year / 4 - year / 100 + year / 400 + (153 * month - 457) / 5 + day - 306;
 }
 
 void create_school_year()
@@ -1273,6 +1290,11 @@ void enroll_in_course(string d,info_student& a)
 	int max = 0;
 	int registed = 0;
 	string s, s2;
+	int day = 0;
+	int month = 0;
+	int year = 0;
+	int temp1 = 0;
+	int temp2 = 0;
 
 	infile1.open(d);
 	if (!infile1.is_open())
@@ -1283,56 +1305,76 @@ void enroll_in_course(string d,info_student& a)
 	}
 	else
 	{
-		if (a.course_registed == 5)
-		{
-			cout << "Already enrolled 5 courses. Can't enroll more course" << endl;
-			return;
-		}
-		else
-		{
-			cout << "List course" << endl;
-			view_list_of_courses(d);
-			cout << endl;
-			infile1.close();
+		get_date(day, month, year);
+		n = count_dates(day, month, year);
+		infile2.open("course registration.txt");
+		infile2 >> day >> month >> year;
+		temp1 = count_dates(day, month, year);
+		infile2 >> day >> month >> year;
+		temp2 = count_dates(day, month, year);
+		infile2.close();
 
-			cout << "Enter course's name you want to enroll in: ";
-			cin.ignore();
-			getline(cin, s);
-			infile2.open(s + ".txt");
-			if (!infile2.is_open())
+		if (n >= temp1 && n <= temp2)
+		{
+			if (a.course_registed == 5)
 			{
-				cout << "Course isn't existed. Can't enroll" << endl;
-				infile2.close();
+				cout << "Already enrolled 5 courses. Can't enroll more course" << endl;
+				infile1.close();
 				return;
 			}
 			else
 			{
+				cout << "List course" << endl;
+				view_list_of_courses(d);
+				cout << endl;
+				infile1.close();
 
-				infile2 >> registed;
-				infile2 >> max;
-				if (registed >= max)
+				cout << "Enter course's name you want to enroll in: ";
+				cin.ignore();
+				getline(cin, s);
+				infile2.open(s + ".txt");
+				if (!infile2.is_open())
 				{
-					cout << "This course had full student. Can't enroll" << endl;
+					cout << "Course isn't existed. Can't enroll" << endl;
 					infile2.close();
 					return;
 				}
 				else
 				{
-					infile2.close();
-					outfile.open(s + ".txt", ios_base::app);
-					outfile << a.id << " " << a.f_name << " " << a.l_name << endl;
-					outfile.close();
 
-					update_course_file_after_enroll(s, registed, max);
+					infile2 >> registed;
+					infile2 >> max;
+					if (registed >= max)
+					{
+						cout << "This course had full student. Can't enroll" << endl;
+						infile2.close();
+						return;
+					}
+					else
+					{
+						infile2.close();
+						outfile.open(s + ".txt", ios_base::app);
+						outfile << a.id << " " << a.f_name << " " << a.l_name << endl;
+						outfile.close();
 
-					a.course_registed = a.course_registed + 1;
+						update_course_file_after_enroll(s, registed, max);
 
-					update_class_file_after_enroll(a);
+						a.course_registed = a.course_registed + 1;
 
-					cout << "Enroll in a course successfully" << endl;
+						update_class_file_after_enroll(a);
+
+						cout << "Enroll in a course successfully" << endl;
+					}
 				}
 			}
 		}
+		else
+		{
+			cout << " Today course registration isn't activated, can't enroll" << endl;
+			infile1.close();
+			return;
+		}
+		
 	}
 }
 
@@ -1462,6 +1504,67 @@ void view_list_enrolled(string d, info_student a)
 		}
 		infile1.close();
 	}
+}
+
+void view_list_of_students_in_class()
+{
+	string clas;
+	string s;
+	int n = 0;
+	ifstream infile;
+
+	cout << "Input class's name you want to view list of students: ";
+	cin.ignore();
+	getline(cin, clas);
+
+	infile.open(clas + ".csv");
+	if (infile.is_open())
+	{
+		cout << "List of student in class " << clas << " :" << endl;
+		cout << left << setw(7) << "No" << left << setw(7) << "ID" << left << setw(13) << "First name";
+		cout << left << setw(13) << "Last name" << left << setw(13) << "Gender" << left << setw(9) << "Day";
+		cout << left << setw(9) << "Month" << left << setw(9) << "Year" << left << setw(14) << "Social ID" << left << setw(9) << "Course Registed" << endl;
+
+		getline(infile, s, '\n');
+		while (!infile.eof())
+		{
+			infile >> n;
+			getline(infile, s, ',');
+			if (infile.eof())
+			{
+				break;
+			}
+			cout << left << setw(7) << n;
+			infile >> n;
+			getline(infile, s, ',');
+			cout << left << setw(7) << n;
+			getline(infile, s, ',');
+			cout << left << setw(13) << s;
+			getline(infile, s, ',');
+			cout << left << setw(13) << s;
+			getline(infile, s, ',');
+			cout << left << setw(13) << s;
+			getline(infile, s, ',');
+			cout << left << setw(9) << s;
+			getline(infile, s, ',');
+			cout << left << setw(9) << s;
+			getline(infile, s, ',');
+			cout << left << setw(9) << s;
+			getline(infile, s, ',');
+			cout << left << setw(14) << s;
+			getline(infile, s, '\n');
+			cout << left << setw(9) << s << endl;
+		}
+		infile.close();
+	}
+	else
+	{
+		cout << "Class isn't existed" << endl;
+		infile.close();
+		return;
+	}
+
+
 }
 
 double* read_mark(string d, string h)
