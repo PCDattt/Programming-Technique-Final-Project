@@ -138,6 +138,7 @@ void student_working()
 			cout << "5. View list of class" << endl;
 			cout << "6. View list of students in a class" << endl;
 			cout << "7. View list of courses" << endl;
+			cout << "8. View list of students in a course" << endl;
 			cout << "0. Exit" << endl;
 			cout << "Choose option you want: ";
 			cin >> p;
@@ -187,6 +188,11 @@ void student_working()
 				view_list_of_courses(current_semister);
 			}
 
+			if (p == 8)
+			{
+				view_list_of_students_in_course();
+			}
+
 			cout << endl;
 		}
 	}
@@ -212,7 +218,7 @@ bool check_account_staff(account_staff& a)
 	cout << " + enter ID : ";
 	cin >> x;
 	cin.ignore();
-	cout << " + enter password :";
+	cout << " + enter password : ";
 	getline(cin, y);
 	while (!f1.eof())
 	{
@@ -277,7 +283,7 @@ bool check_account_student(account_student& a)
 	cout << " + enter ID : ";
 	cin >> x;
 	cin.ignore();
-	cout << " + enter password :";
+	cout << " + enter password : ";
 	cin.getline(y, 50);
 	while (!f1.eof())
 	{
@@ -1559,12 +1565,56 @@ void view_list_of_students_in_class()
 	}
 	else
 	{
-		cout << "Class isn't existed" << endl;
+		cout << "Class isn't existed, can't view" << endl;
 		infile.close();
 		return;
 	}
+}
 
+void view_list_of_students_in_course()
+{
+	string course;
+	string s;
+	string semister;
+	int n = 0;
+	ifstream infile;
 
+	semister = get_current_semister();
+	view_list_of_courses(semister);
+	cout << endl;
+	cout << "Input course's name you want to view list of students: ";
+	cin.ignore();
+	getline(cin, course);
+	cout << endl;
+
+	infile.open(course + ".txt");
+	if (infile.is_open())
+	{
+		cout << "Students registed: ";
+		infile >> n;
+		cout << n << " " << endl;
+		infile >> n;
+		cout << "Maximum students of course: " << n << endl;
+		cout << left << setw(15) << "ID" << "Student's name" << endl;
+		while (!infile.eof())
+		{
+			infile >> n;
+			if (infile.eof())
+			{
+				break;
+			}
+			cout << left << setw(15) << n;
+			getline(infile, s, '\n');
+			cout << s << endl;
+		}
+		infile.close();
+	}
+	else
+	{
+		cout << "Course isn't existed, can't view" << endl;
+		infile.close();
+		return;
+	}
 }
 
 double* read_mark(string d, string h)

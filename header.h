@@ -118,6 +118,8 @@ void view_list_enrolled(string d, info_student a);
 
 void view_list_of_students_in_class();
 
+void view_list_of_students_in_course();
+
 double* read_mark(string d, string h);
 
 void export_score_list(string& d);
