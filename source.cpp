@@ -32,6 +32,7 @@ void staff_working()
 			cout << "10. Update course info" << endl;
 			cout << "11. Delete course" << endl;
 			cout << "12. Export list of students in a course to CSV file" << endl;
+			cout << "13. Import scoreboard" << endl;
 			cout << "0. Exit " << endl;
 			cout << "Choose option you want: ";
 			cin >> p;
@@ -108,6 +109,12 @@ void staff_working()
 			{
 				current_semister = get_current_semister();
 				export_list_students(current_semister);
+			}
+
+			if (p == 13)
+			{
+				current_semister = get_current_semister();
+				import_scoreboard(current_semister);
 			}
 			cout << endl;
 		}
@@ -1686,6 +1693,79 @@ void export_list_students(string d)
 	{
 		cout << "Course isn't existed, can't export" << endl;
 		infile.close();
+		return;
+	}
+}
+
+void import_scoreboard(string d)
+{
+	ifstream infile1;
+	ifstream infile2;
+	ofstream outfile;
+	string s;
+	int n = 0;
+	int registed = 0;
+	int max = 0;
+
+	view_list_of_courses(d);
+	cout << endl;
+
+	cout << "Input course's name you want to import scoreboard: ";
+	cin.ignore();
+	getline(cin, s);
+
+	infile1.open(s + ".txt");
+	if (infile1.is_open())
+	{
+		infile1 >> registed;
+		infile1 >> max;
+		infile1.close();
+
+		infile2.open(s + " scoreboard.csv");
+		if (infile2.is_open())
+		{
+			outfile.open(s + ".txt");
+			outfile << registed << " " << max << endl;
+			getline(infile2, s, '\n');
+			while (!infile2.eof())
+			{
+				getline(infile2, s, ',');
+				if (infile2.eof())
+				{
+					break;
+				}
+				outfile << s << " ";
+				getline(infile2, s, ',');
+				outfile << s << " ";
+				getline(infile2, s, ',');
+				outfile << s << " ";
+				getline(infile2, s, ',');
+				outfile << s << " ";
+				getline(infile2, s, ',');
+				outfile << s << " ";
+				getline(infile2, s, ',');
+				outfile << s << " ";
+				getline(infile2, s, '\n');
+				outfile << s << endl;
+			}
+			infile2.close();
+			outfile.close();
+			cout << "Import scoreboard successfully" << endl;
+		}
+		else
+		{
+			cout << "Can't find course's scoreboard" << endl;
+			infile2.close();
+			return;
+		}
+
+
+
+	}
+	else
+	{
+		cout << "Course isn't existed, can't import scoreboard" << endl;
+		infile1.close();
 		return;
 	}
 }

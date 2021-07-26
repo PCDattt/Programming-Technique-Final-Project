@@ -122,6 +122,7 @@ void view_list_of_students_in_class();
 void view_list_of_students_in_course();
 
 void export_list_students(string d);
+void import_scoreboard(string d);
 
 double* read_mark(string d, string h);
 
