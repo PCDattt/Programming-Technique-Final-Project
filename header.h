@@ -20,6 +20,7 @@ struct account_staff;
 struct info_student
 {
 	string clas;
+	int no;
 	int id;
 	string f_name;
 	string l_name;
@@ -119,6 +120,8 @@ void view_list_enrolled(string d, info_student a);
 void view_list_of_students_in_class();
 
 void view_list_of_students_in_course();
+
+void export_list_students(string d);
 
 double* read_mark(string d, string h);
 

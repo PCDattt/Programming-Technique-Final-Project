@@ -31,6 +31,7 @@ void staff_working()
 			cout << "9. View list of courses" << endl;
 			cout << "10. Update course info" << endl;
 			cout << "11. Delete course" << endl;
+			cout << "12. Export list of students in a course to CSV file" << endl;
 			cout << "0. Exit " << endl;
 			cout << "Choose option you want: ";
 			cin >> p;
@@ -101,6 +102,12 @@ void staff_working()
 			{
 				current_semister = get_current_semister();
 				delete_course(current_semister);
+			}
+
+			if (p == 12)
+			{
+				current_semister = get_current_semister();
+				export_list_students(current_semister);
 			}
 			cout << endl;
 		}
@@ -1218,6 +1225,7 @@ void get_info_student(int id,info_student &a)
 	string s;
 	string clas;
 	int n;
+	int no;
 
 	infile1.open("list_class.txt");
 	if (!infile1.is_open())
@@ -1235,11 +1243,12 @@ void get_info_student(int id,info_student &a)
 			getline(infile2, s, '\n');
 			while (!infile2.eof())
 			{
-				infile2 >> n;
+				infile2 >> no;
 				getline(infile2, s, ',');
 				infile2 >> n;
 				if (n == id)
 				{
+					a.no = no;
 					a.id = n;
 					getline(infile2, s, ',');
 					getline(infile2, s, ',');
@@ -1290,12 +1299,14 @@ void enroll_in_course(string d,info_student& a)
 {
 	ifstream infile1;
 	ifstream infile2;
+	ifstream infile3;
 	ofstream outfile;
 	int n = 0;
 	int no = 0;
 	int max = 0;
 	int registed = 0;
 	string s, s2;
+	int id = 0;
 	int day = 0;
 	int month = 0;
 	int year = 0;
@@ -1347,6 +1358,21 @@ void enroll_in_course(string d,info_student& a)
 				}
 				else
 				{
+					infile3.open(s + ".txt");
+					getline(infile3, s, '\n');
+					while (!infile3.eof())
+					{
+						infile3 >> no;
+						infile3 >> id;
+						getline(infile3, s, '\n');
+						if (no == a.no && id == a.id)
+						{
+							cout << "Already enrolled in this course" << endl;
+							infile3.close();
+							return;
+						}
+					}
+					infile3.close();
 
 					infile2 >> registed;
 					infile2 >> max;
@@ -1360,7 +1386,7 @@ void enroll_in_course(string d,info_student& a)
 					{
 						infile2.close();
 						outfile.open(s + ".txt", ios_base::app);
-						outfile << a.id << " " << a.f_name << " " << a.l_name << endl;
+						outfile << a.no << " " << a.id << " " << a.f_name << " " << a.l_name << endl;
 						outfile.close();
 
 						update_course_file_after_enroll(s, registed, max);
@@ -1469,6 +1495,7 @@ void view_list_enrolled(string d, info_student a)
 	int id_clas = 0;
 	int id_student = 0;
 	int n = 0;
+	int no = 0;
 	string clas;
 	string s;
 
@@ -1492,6 +1519,7 @@ void view_list_enrolled(string d, info_student a)
 			getline(infile2, s, '\n');
 			while (!infile2.eof())
 			{
+				infile2 >> no;
 				infile2 >> id_student;
 				if (infile2.eof())
 				{
@@ -1595,7 +1623,7 @@ void view_list_of_students_in_course()
 		cout << n << " " << endl;
 		infile >> n;
 		cout << "Maximum students of course: " << n << endl;
-		cout << left << setw(15) << "ID" << "Student's name" << endl;
+		cout << left << setw(15) << "No" << left << setw(15) << "ID" << "Student's name" << endl;
 		while (!infile.eof())
 		{
 			infile >> n;
@@ -1603,6 +1631,8 @@ void view_list_of_students_in_course()
 			{
 				break;
 			}
+			cout << left << setw(15) << n;
+			infile >> n;
 			cout << left << setw(15) << n;
 			getline(infile, s, '\n');
 			cout << s << endl;
@@ -1612,6 +1642,49 @@ void view_list_of_students_in_course()
 	else
 	{
 		cout << "Course isn't existed, can't view" << endl;
+		infile.close();
+		return;
+	}
+}
+
+void export_list_students(string d)
+{
+	ifstream infile;
+	ofstream outfile;
+	string s;
+	int n = 0;
+
+	view_list_of_courses(d);
+	cout << endl;
+	cout << "Input course's name you want to export list of students into CSV file: ";
+	cin.ignore();
+	getline(cin, s);
+	infile.open(s + ".txt");
+	
+	if (infile.is_open())
+	{
+		outfile.open(s + " scoreboard.csv");
+		outfile << "No,Student ID,Student Full Name,Total Mark,Final Mark,Midterm Mark,Other Mark" << endl;
+		getline(infile, s, '\n');
+		while (!infile.eof())
+		{
+			infile >> n;
+			if (infile.eof())
+			{
+				break;
+			}
+			outfile << n << ",";
+			infile >> n;
+			outfile << n << ",";
+			getline(infile, s, '\n');
+			outfile << s << endl;
+		}
+		infile.close();
+		cout << "Export list of students successfully" << endl;
+	}
+	else
+	{
+		cout << "Course isn't existed, can't export" << endl;
 		infile.close();
 		return;
 	}
