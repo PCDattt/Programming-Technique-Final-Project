@@ -10,10 +10,7 @@
 
 using namespace std;
 
-struct i_student;
-struct i_course;
-struct mark;
-struct i_s_course;
+struct info_student;
 struct account_student;
 struct account_staff;
 
@@ -30,34 +27,6 @@ struct info_student
 	int year;
 	int social_id;
 	int course_registed;
-};
-
-struct i_course
-{
-	int course_id;
-	char* course_name;
-	char* teacher;
-	int n_o_credits;
-	char* day1;
-	int session1;
-	char* day2;
-	int session2;
-	int n_o_student;
-};
-
-struct mark
-{
-	double total_mark;
-	double final_mark;
-	double other_mark;
-	double midterm_mark;
-};
-
-struct i_s_course
-{
-	mark s_mark;
-	i_course i_c;
-	i_s_course* node;
 };
 
 struct account_student
@@ -123,10 +92,5 @@ void view_list_of_students_in_course();
 
 void export_list_students(string d);
 void import_scoreboard(string d);
-
-double* read_mark(string d, string h);
-
-void export_score_list(string& d);
-void correct_score(string& d, string& h);
 
 #endif
