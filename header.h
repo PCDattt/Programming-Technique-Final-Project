@@ -95,4 +95,6 @@ void import_scoreboard(string d);
 
 void view_course_scoreboard(string d);
 
+void view_student_scoreboard(string d, info_student a);
+
 #endif

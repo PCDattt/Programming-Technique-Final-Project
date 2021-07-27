@@ -160,6 +160,7 @@ void student_working()
 			cout << "6. View list of students in a class" << endl;
 			cout << "7. View list of courses" << endl;
 			cout << "8. View list of students in a course" << endl;
+			cout << "9. View scoreboard" << endl;
 			cout << "0. Exit" << endl;
 			cout << "Choose option you want: ";
 			cin >> p;
@@ -214,6 +215,12 @@ void student_working()
 				view_list_of_students_in_course();
 			}
 
+			if (p == 9)
+			{
+				current_semister = get_current_semister();
+				get_info_student(a.id, b);
+				view_student_scoreboard(current_semister, b);
+			}
 			cout << endl;
 		}
 	}
@@ -261,33 +268,16 @@ bool check_account_staff(account_staff& a)
 
 void read_info_account_staff(ifstream& file, account_staff& a)
 {
-	char b[50];
-	int i = 0;
+	string s;
 
 	file >> a.id;
-	file.ignore();
-	file.getline(b, 50, '\n');
 
-	a.pw = b[0];
-	for (i = 1; i < strlen(b); i++)
-	{
-		if (b[i] != ',')
-		{
-			a.pw = a.pw + b[i];
-		}
-		else
-		{
-			i = i + 1;
-			break;
-		}
-	}
+	getline(file, s, ',');
+	getline(file, s, ',');
+	a.pw = s;
 
-	a.name = b[i];
-	for (i = i + 1; i < strlen(b); i++)
-	{
-		a.name = a.name + b[i];
-	}
-#pragma warning(suppress : 4996)
+	getline(file, s, '\n');
+	a.name = s;
 }
 
 bool check_account_student(account_student& a)
@@ -650,6 +640,10 @@ void add_student_by_csv_file()
 			while (!infile.eof())
 			{
 				getline(infile, temp,'\n');
+				if (infile.eof())
+				{
+					break;
+				}
 				outfile << temp << "," << 0 << endl;
 			}
 			infile.close();
@@ -1320,6 +1314,7 @@ void enroll_in_course(string d,info_student& a)
 	int max = 0;
 	int registed = 0;
 	string s, s2;
+	string course;
 	int id = 0;
 	int day = 0;
 	int month = 0;
@@ -1362,8 +1357,8 @@ void enroll_in_course(string d,info_student& a)
 
 				cout << "Enter course's name you want to enroll in: ";
 				cin.ignore();
-				getline(cin, s);
-				infile2.open(s + ".txt");
+				getline(cin, course);
+				infile2.open(course + ".txt");
 				if (!infile2.is_open())
 				{
 					cout << "Course isn't existed. Can't enroll" << endl;
@@ -1372,7 +1367,7 @@ void enroll_in_course(string d,info_student& a)
 				}
 				else
 				{
-					infile3.open(s + ".txt");
+					infile3.open(course + ".txt");
 					getline(infile3, s, '\n');
 					while (!infile3.eof())
 					{
@@ -1399,11 +1394,11 @@ void enroll_in_course(string d,info_student& a)
 					else
 					{
 						infile2.close();
-						outfile.open(s + ".txt", ios_base::app);
+						outfile.open(course + ".txt", ios_base::app);
 						outfile << a.no << " " << a.id << " " << a.f_name << " " << a.l_name << endl;
 						outfile.close();
 
-						update_course_file_after_enroll(s, registed, max);
+						update_course_file_after_enroll(course, registed, max);
 
 						a.course_registed = a.course_registed + 1;
 
@@ -1542,7 +1537,7 @@ void view_list_enrolled(string d, info_student a)
 
 				if (id_student == a.id)
 				{
-					cout << id_clas << "    " << clas << endl;
+					cout << id_clas << "        " << clas << endl;
 					break;
 				}
 				getline(infile1, s, '\n');
@@ -1690,6 +1685,7 @@ void export_list_students(string d)
 			outfile << n << ",";
 			infile >> n;
 			outfile << n << ",";
+			getline(infile, s, ' ');
 			getline(infile, s, '\n');
 			outfile << s << endl;
 		}
@@ -1787,7 +1783,7 @@ void view_course_scoreboard(string d)
 	view_list_of_courses(d);
 	cout << endl;
 
-	cout << "Input course's name you want to import scoreboard: ";
+	cout << "Input course's name you want to view scoreboard: ";
 	cin.ignore();
 	getline(cin, s);
 
@@ -1814,7 +1810,7 @@ void view_course_scoreboard(string d)
 			getline(infile, s, ' ');
 			getline(infile, s, ' ');
 			getline(infile, temp, ' ');
-			s = s + temp;
+			s = s + " " + temp;
 			cout << left << setw(14) << s;
 
 			infile >> n;
@@ -1840,3 +1836,65 @@ void view_course_scoreboard(string d)
 	}
 }
 
+void view_student_scoreboard(string d, info_student a)
+{
+	ifstream infile1, infile2;
+	int id_clas = 0;
+	int id_student = 0;
+	int n = 0;
+	int no = 0;
+	string clas;
+	string s;
+
+	infile1.open(d);
+	if (infile1.is_open())
+	{
+		cout << "Student's scoreboard: " << endl;
+		cout << left << setw(16) << "Course's ID" << left << setw(16) << "Course's name" << left << setw(16) << "Total Mark";
+		cout << left << setw(16) << "Final Mark" << left << setw(16) << "Midterm Mark" << "Other Mark" << endl;
+		while (!infile1.eof())
+		{
+			infile1 >> id_clas;
+			getline(infile1, s, ';');
+			getline(infile1, clas, ';');
+
+			if (infile1.eof())
+			{
+				break;
+			}
+
+			infile2.open(clas + ".txt");
+			getline(infile2, s, '\n');
+			while (!infile2.eof())
+			{
+				infile2 >> no;
+				infile2 >> id_student;
+				if (infile2.eof())
+				{
+					break;
+				}
+
+				if (id_student == a.id)
+				{
+					cout << left << setw(16) << id_clas << left << setw(16) << clas;
+					getline(infile2, s, ' ');
+					getline(infile2, s, ' ');
+					getline(infile2, s, ' ');
+					infile2 >> n;
+					cout << left << setw(16) << n;
+					infile2 >> n;
+					cout << left << setw(16) << n;
+					infile2 >> n;
+					cout << left << setw(16) << n;
+					infile2 >> n;
+					cout << left << setw(16) << n << endl;
+					break;
+				}
+				getline(infile2, s, '\n');
+			}
+			infile2.close();
+			getline(infile1, s, '\n');
+		}
+		infile1.close();
+	}
+}
