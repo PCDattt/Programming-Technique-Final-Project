@@ -33,6 +33,7 @@ void staff_working()
 			cout << "11. Delete course" << endl;
 			cout << "12. Export list of students in a course to CSV file" << endl;
 			cout << "13. Import scoreboard" << endl;
+			cout << "14. View scoreboard of course" << endl;
 			cout << "0. Exit " << endl;
 			cout << "Choose option you want: ";
 			cin >> p;
@@ -115,6 +116,12 @@ void staff_working()
 			{
 				current_semister = get_current_semister();
 				import_scoreboard(current_semister);
+			}
+
+			if (p == 14)
+			{
+				current_semister = get_current_semister();
+				view_course_scoreboard(current_semister);
 			}
 			cout << endl;
 		}
@@ -1766,6 +1773,69 @@ void import_scoreboard(string d)
 	{
 		cout << "Course isn't existed, can't import scoreboard" << endl;
 		infile1.close();
+		return;
+	}
+}
+
+void view_course_scoreboard(string d)
+{
+	string s;
+	ifstream infile;
+	string temp;
+	int n = 0;
+
+	view_list_of_courses(d);
+	cout << endl;
+
+	cout << "Input course's name you want to import scoreboard: ";
+	cin.ignore();
+	getline(cin, s);
+
+	infile.open(s + ".txt");
+
+	if (infile.is_open())
+	{
+		cout << left << setw(10) << "No" << left << setw(14) << "ID" << left << setw(14) << "Name" << left << setw(14) << "Total Mark";
+		cout << left << setw(14) << "Final Mark" << left << setw(14) << "Midterm Mark" << "Other Mark" << endl;
+		
+		getline(infile, s, '\n');
+
+		while (!infile.eof())
+		{
+			infile >> n;
+			if (infile.eof())
+			{
+				break;
+			}
+			cout << left << setw(10) << n;
+			infile >> n;
+			cout << left << setw(14) << n;
+
+			getline(infile, s, ' ');
+			getline(infile, s, ' ');
+			getline(infile, temp, ' ');
+			s = s + temp;
+			cout << left << setw(14) << s;
+
+			infile >> n;
+			cout << left << setw(14) << n;
+			infile >> n;
+			cout << left << setw(14) << n;
+			infile >> n;
+			cout << left << setw(14) << n;
+			infile >> n;
+			cout << n << endl;
+
+
+		}
+		
+
+		infile.close();
+	}
+	else
+	{
+		cout << "Course isn't existed, can't view scoreboard" << endl;
+		infile.close();
 		return;
 	}
 }

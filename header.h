@@ -93,4 +93,6 @@ void view_list_of_students_in_course();
 void export_list_students(string d);
 void import_scoreboard(string d);
 
+void view_course_scoreboard(string d);
+
 #endif
